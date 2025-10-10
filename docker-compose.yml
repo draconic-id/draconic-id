@@ -1,24 +1,13 @@
-version: '3.8'
-
 services:
   draconic-id:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - BETTER_AUTH_PROVIDER_ID=${BETTER_AUTH_PROVIDER_ID}
-        - BETTER_AUTH_CLIENT_ID=${BETTER_AUTH_CLIENT_ID}
-        - BETTER_AUTH_CLIENT_SECRET=${BETTER_AUTH_CLIENT_SECRET}
-        - BETTER_AUTH_AUTHORIZATION_URL=${BETTER_AUTH_AUTHORIZATION_URL}
-        - BETTER_AUTH_TOKEN_URL=${BETTER_AUTH_TOKEN_URL}
-        - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-        - BETTER_AUTH_URL=${BETTER_AUTH_URL}
         - PRISMA_URL=${PRISMA_URL}
         - NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=${NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         - NEXT_PUBLIC_MINIO_ENDPOINT=${NEXT_PUBLIC_MINIO_ENDPOINT}
         - NEXT_PUBLIC_MINIO_BUCKET=${NEXT_PUBLIC_MINIO_BUCKET}
-        - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-        - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     ports:
       - "3000:3000"
     environment:
@@ -40,3 +29,6 @@ services:
       - traefik.http.routers.draconic-id.tls=${TRAEFIK_TLS_ENABLED}
       - traefik.http.routers.draconic-id.tls.certresolver=${TRAEFIK_CERT_RESOLVER}
       - traefik.http.services.draconic-id.loadbalancer.server.port=${TRAEFIK_SERVICE_PORT}
+    restart: unless-stopped
+    network_mode: bridge
+    container_name: draconic-id
