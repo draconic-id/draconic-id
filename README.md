@@ -16,13 +16,14 @@ Contributions are welcome, but there is no guarantee they will be included in th
 
 ## ⚙️ Setup
 
-The repository includes a Dockerfile. You may use this to run the project as a Docker container.
+The repository includes a Dockerfile and a Docker Compose file. You may use this to run the project as a Docker container.
 
 ### Environment Variables
 
 The following environment variables can be configured:
 
 **Authentication (Better Auth):**
+
 - `BETTER_AUTH_PROVIDER_ID` - Provider identifier for authentication
 - `BETTER_AUTH_CLIENT_ID` - OAuth client ID
 - `BETTER_AUTH_CLIENT_SECRET` - OAuth client secret
@@ -32,21 +33,31 @@ The following environment variables can be configured:
 - `BETTER_AUTH_URL` - Base URL for the application
 
 **Database:**
+
 - `PRISMA_URL` - PostgreSQL database connection string
 
 **Maps (Mapbox):**
+
 - `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` - Public Mapbox access token for map functionality
 
 **S3 File Storage (MinIO):**
+
 - `NEXT_PUBLIC_MINIO_ENDPOINT` - Public MinIO endpoint URL
 - `NEXT_PUBLIC_MINIO_BUCKET` - MinIO bucket name
 - `MINIO_ACCESS_KEY` - MinIO access key
 - `MINIO_SECRET_KEY` - MinIO secret key
 
+**Reverse Proxy (Traefik):**
+
+- `TRAEFIK_HOST` - Host domain for routing (e.g., `Host(\`draconic.id\`)`)
+- `TRAEFIK_TLS_ENABLED` - Enable TLS/SSL (e.g., `true`)
+- `TRAEFIK_CERT_RESOLVER` - Certificate resolver name (e.g., `lets-encrypt`)
+- `TRAEFIK_SERVICE_PORT` - Service port for load balancer (e.g., `3000`)
+
 ## 🙏 Acknowledgments
 
 We extend our heartfelt gratitude to all users of the Draconic ID platform for your trust and engagement,  members of the Dragonkin.EU community for providing valuable feedback and bug reports and contributors who have directly improved and brought value to the platoform.
 
-![Contributors](https://contrib.rocks/image?repo=jelle619/draconic-id)
+![Contributors](https://contrib.rocks/image?repo=draconic-id/draconic-id)
 
 Your support and contributions make this project possible. Thank you for being part of the Draconic ID community!
