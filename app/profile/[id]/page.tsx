@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { updateProfile, updateAbout } from './actions';
 import About from '@/components/about';
+import { getProfileColors } from '@/lib/utils';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -81,7 +82,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         notFound();
     }
 
+    const profileColors = profile.color ? getProfileColors(profile.color) : null;
+
     return (
+        <div className="w-dvw min-h-dvh" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
         <div className="max-w-4xl mx-auto px-4">
             <div className="w-1 h-16" />
             <h1>
@@ -97,7 +101,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
             </h1>
 
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm flex flex-row items-center gap-2">
+            <div className="bg-card border border-border rounded-lg p-6 shadow-sm flex flex-row items-center gap-2" style={{...(profileColors?.backgroundColorCard && { background: profileColors.backgroundColorCard }), ...(profileColors?.backgroundColorMuted && { '--muted': profileColors.backgroundColorMuted }), ...(profileColors?.textColor && { '--foreground': profileColors.textColor })} as React.CSSProperties}>
                 <Avatar className="border">
                     <AvatarImage src={profile.avatar ? `${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}` : undefined} />
                     <AvatarFallback>{profile.user.name.charAt(0)}</AvatarFallback>
@@ -111,8 +115,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 initialAbout={profile.about}
                 editable={editable}
                 updateAbout={updateAbout}
+                backgroundColor={profileColors?.backgroundColor}
+                backgroundColorCard={profileColors?.backgroundColorCard}
+                backgroundColorMuted={profileColors?.backgroundColorMuted}
+                textColor={profileColors?.textColor}
+                textColorMuted={profileColors?.textColorMuted}
             />
             <div className="w-1 h-16" />
+        </div>
         </div>
     )
 }

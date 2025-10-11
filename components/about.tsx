@@ -81,9 +81,14 @@ interface AboutProps {
   initialAbout: string | null;
   editable: boolean;
   updateAbout: (formData: FormData) => Promise<void>;
+  backgroundColor?: string;
+  backgroundColorCard?: string;
+  backgroundColorMuted?: string;
+  textColor?: string;
+  textColorMuted?: string;
 }
 
-export default function About({ initialAbout, editable, updateAbout }: AboutProps) {
+export default function About({ initialAbout, editable, updateAbout, backgroundColor, backgroundColorCard, backgroundColorMuted, textColor, textColorMuted }: AboutProps) {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [aboutText, setAboutText] = useState(initialAbout || '');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -177,15 +182,18 @@ export default function About({ initialAbout, editable, updateAbout }: AboutProp
     setHasUnsavedChanges(false);
   };
 
+  console.log("text color muted")
+  console.log(textColorMuted)
+
   return (
     <>
       <h1>
         About Me {editable && <PencilLine onClick={toggleForm} className="cursor-pointer inline h-4 w-4" />}
       </h1>
-      <div className="bg-card border border-border rounded-lg p-6 shadow-sm text-foreground relative">
+      <div className="bg-card border border-border rounded-lg p-6 shadow-sm text-foreground relative" style={{...(backgroundColorCard && { background: backgroundColorCard }), ...(backgroundColorMuted && { '--muted': backgroundColorMuted })} as React.CSSProperties}>
         {isFormVisible && editor && (
           <>
-            <div className="sticky top-14 z-10 p-3 border border-border rounded-lg bg-muted/50 backdrop-blur-sm overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
+            <div className="sticky top-14 z-10 p-3 border border-border rounded-lg bg-background/50 backdrop-blur-sm overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
               <div className="flex gap-1 justify-center min-w-max">
                 <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'bg-accent' : ''}>
                   <Bold className="h-4 w-4" />
@@ -370,22 +378,23 @@ export default function About({ initialAbout, editable, updateAbout }: AboutProp
         )}
 
         {!isFormVisible && !aboutText ? (
-          <p className="text-muted-foreground">No content has been provided.</p>
+          <p className="text-muted-foreground" style={textColorMuted ? { color: textColorMuted } : {}}>No content has been provided.</p>
         ) : (
           <EditorContent
             editor={editor}
+            style={{...(textColor && { color: textColor, '--foreground': textColor }), ...(textColorMuted && { '--muted-foreground': textColorMuted })} as React.CSSProperties}
             className="prose-sm max-w-none
               [&>div]:outline-none [&>div]:min-h-[100px]
-              [&>div>h1]:text-2xl [&>div>h1]:font-bold [&>div>h1]:text-foreground [&>div>h1]:mb-4 [&>div>h1]:mt-0
-              [&>div>h2]:text-xl [&>div>h2]:font-semibold [&>div>h2]:text-foreground [&>div>h2]:mb-3 [&>div>h2]:mt-6
-              [&>div>h3]:text-lg [&>div>h3]:font-medium [&>div>h3]:text-foreground [&>div>h3]:mb-2 [&>div>h3]:mt-4
-              [&>div>h4]:text-base [&>div>h4]:font-medium [&>div>h4]:text-foreground [&>div>h4]:mb-2 [&>div>h4]:mt-3
-              [&>div>h5]:text-sm [&>div>h5]:font-medium [&>div>h5]:text-foreground [&>div>h5]:mb-1 [&>div>h5]:mt-2
+              [&>div>h1]:text-2xl [&>div>h1]:font-bold [&>div>h1]:mb-4 [&>div>h1]:mt-0
+              [&>div>h2]:text-xl [&>div>h2]:font-semibold [&>div>h2]:mb-3 [&>div>h2]:mt-6
+              [&>div>h3]:text-lg [&>div>h3]:font-medium [&>div>h3]:mb-2 [&>div>h3]:mt-4
+              [&>div>h4]:text-base [&>div>h4]:font-medium [&>div>h4]:mb-2 [&>div>h4]:mt-3
+              [&>div>h5]:text-sm [&>div>h5]:font-medium [&>div>h5]:mb-1 [&>div>h5]:mt-2
               [&>div>h6]:text-sm [&>div>h6]:font-medium [&>div>h6]:text-muted-foreground [&>div>h6]:mb-1 [&>div>h6]:mt-2
-              [&>div>p]:text-foreground [&>div>p]:mb-4 [&>div>p]:leading-relaxed
+              [&>div>p]:mb-4 [&>div>p]:leading-relaxed
               [&>div>a]:text-primary [&>div>a]:underline [&>div>a]:underline-offset-4 hover:[&>div>a]:text-primary/80
               [&_a]:underline [&>div>u]:underline
-              [&>div>ul]:mb-4 [&>div>ul]:pl-6 [&>div>ul]:list-disc [&>div>li]:mb-1 [&>div>li]:text-foreground
+              [&>div>ul]:mb-4 [&>div>ul]:pl-6 [&>div>ul]:list-disc [&>div>li]:mb-1
               [&>div>ol]:mb-4 [&>div>ol]:pl-6 [&>div>ol]:list-decimal
               [&>div>ul[data-type='taskList']]:list-none [&>div>ul[data-type='taskList']]:pl-0
               [&>div>ul[data-type='taskList']>li]:flex [&>div>ul[data-type='taskList']>li]:items-center [&>div>ul[data-type='taskList']>li]:gap-2 [&>div>ul[data-type='taskList']>li]:mb-1
@@ -394,16 +403,16 @@ export default function About({ initialAbout, editable, updateAbout }: AboutProp
               [&>div>ul[data-type='taskList']>li>label]:before:content-[''] [&>div>ul[data-type='taskList']>li>label]:before:h-4 [&>div>ul[data-type='taskList']>li>label]:before:w-4 [&>div>ul[data-type='taskList']>li>label]:before:rounded-sm [&>div>ul[data-type='taskList']>li>label]:before:border [&>div>ul[data-type='taskList']>li>label]:before:border-primary [&>div>ul[data-type='taskList']>li>label]:before:mr-2 [&>div>ul[data-type='taskList']>li>label]:before:flex [&>div>ul[data-type='taskList']>li>label]:before:items-center [&>div>ul[data-type='taskList']>li>label]:before:justify-center [&>div>ul[data-type='taskList']>li>label]:before:text-primary-foreground [&>div>ul[data-type='taskList']>li>label]:before:text-xs
               [&>div>ul[data-type='taskList']>li>label:has(input:checked)]:before:bg-primary [&>div>ul[data-type='taskList']>li>label:has(input:checked)]:before:content-'✓'
               [&>div>ul[data-type='taskList']>li>div]:flex-1 [&>div>ul[data-type='taskList']>li>div>p]:mb-0 [&>div>ul[data-type='taskList']>li>div>p]:mt-0
-              [&>div>blockquote]:border-l-4 [&>div>blockquote]:border-border [&>div>blockquote]:pl-4 [&>div>blockquote]:italic [&>div>blockquote]:text-muted-foreground [&>div>blockquote]:mb-4
-              [&>div>code]:bg-muted [&>div>code]:px-1.5 [&>div>code]:py-0.5 [&>div>code]:rounded [&>div>code]:text-sm [&>div>code]:font-mono [&>div>code]:text-foreground
+              [&>div>blockquote]:border-l-4 [&>div>blockquote]:text-muted-foreground [&>div>blockquote]:border-border [&>div>blockquote]:pl-4 [&>div>blockquote]:italic [&>div>blockquote]:mb-4
+              [&>div>code]:bg-muted [&>div>code]:px-1.5 [&>div>code]:py-0.5 [&>div>code]:rounded [&>div>code]:text-sm [&>div>code]:font-mono
               [&>div>pre]:bg-muted [&>div>pre]:p-4 [&>div>pre]:rounded-lg [&>div>pre]:overflow-x-auto [&>div>pre]:mb-4
               [&>div>pre>code]:bg-transparent [&>div>pre>code]:p-0
 
               [&>div>hr]:border-border [&>div>hr]:my-6
               [&>div>img]:max-w-full [&>div>img]:inline-block
 
-              [&>div>strong]:font-semibold [&>div>strong]:text-foreground
-              [&>div>em]:italic [&>div>em]:text-foreground
+              [&>div>strong]:font-semibold
+              [&>div>em]:italic
               [&>div>sup]:text-xs [&>div>sup]:align-super
               [&>div>sub]:text-xs [&>div>sub]:align-sub
               [&>div>*:last-child]:mb-0"

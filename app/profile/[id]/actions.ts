@@ -33,6 +33,7 @@ export async function updateProfile(formData: FormData) {
   var avatar = formData.get('avatar') as string;
   const avatarFile = formData.get('avatar') as File;
   const background = formData.get('background') as string;
+  const color = formData.get('color') as string;
   const latitudeStr = formData.get('latitude') as string;
   const longitudeStr = formData.get('longitude') as string;
   const privacy = formData.get('privacy') as string;
@@ -115,6 +116,7 @@ export async function updateProfile(formData: FormData) {
   const updateData: any = {
     tagline: tagline || null,
     background: background || null,
+    color: color || null,
     latitude,
     longitude,
     privacy: privacy || 'PUBLIC',

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ interface ProfileFormProps {
     profile: {
         user: { name: string };
         tagline: string | null;
+        color: string | null;
         latitude: number | null;
         longitude: number | null;
         privacy: 'PUBLIC' | 'UNLISTED' | 'HIDDEN' | 'PRIVATE';
@@ -21,6 +23,8 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({ action, profile }: ProfileFormProps) {
+    const [showColorPicker, setShowColorPicker] = useState(!!profile.color);
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         const formData = new FormData(e.currentTarget);
         let totalSize = 0;
@@ -106,6 +110,42 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                         </SelectContent>
                     </Select>
 
+                </div>
+                <div className="grid gap-3">
+                    <Label htmlFor="color">Color</Label>
+                    <Alert variant="default">
+                        <Info />
+                        <AlertDescription>
+                            <p>Add a color theme to your profile. Leave empty for the standard light/dark theme with optimal readability.</p>
+                        </AlertDescription>
+                    </Alert>
+                    <div className="flex gap-2 items-center">
+                        {showColorPicker ? (
+                            <>
+                                <Input id="color" name="color" type="color" defaultValue={profile.color || '#000000'} className="w-16 h-10 p-1" />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowColorPicker(false)}
+                                >
+                                    Reset
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setShowColorPicker(true)}
+                                >
+                                    Add Color
+                                </Button>
+                                <input type="hidden" name="color" value="" />
+                            </>
+                        )}
+                    </div>
                 </div>
                 <div className="grid gap-3">
                     <Label htmlFor="location">Latitude and longitude</Label>
