@@ -152,7 +152,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     const profileColors = profile.color ? getProfileColors(profile.color) : null;
 
     return (
-        <div className="w-dvw min-h-dvh" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
+        <div className="w-full min-h-dvh" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
         <div className="max-w-4xl mx-auto px-4">
             <div className="w-1 h-16" />
             <h1>
