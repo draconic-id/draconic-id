@@ -7,8 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import LocationPicker from '@/components/location-picker';
-import { Info, TriangleAlert, Plus, X, GripVertical } from 'lucide-react';
+import { Info, TriangleAlert, Plus, X, GripVertical, Egg } from 'lucide-react';
+import { format } from 'date-fns';
 
 interface ProfileFormProps {
     action: (formData: FormData) => void;
@@ -19,12 +23,16 @@ interface ProfileFormProps {
         latitude: number | null;
         longitude: number | null;
         privacy: 'PUBLIC' | 'UNLISTED' | 'HIDDEN' | 'PRIVATE';
+        birthDate: Date | null;
+        showAge: boolean;
         links: { name: string; url: string }[] | null;
     };
 }
 
 export default function ProfileForm({ action, profile }: ProfileFormProps) {
     const [showColorPicker, setShowColorPicker] = useState(!!profile.color);
+    const [birthDate, setBirthDate] = useState<Date | undefined>(profile.birthDate || undefined);
+    const [showAge, setShowAge] = useState(profile.showAge);
     const [links, setLinks] = useState<{ name: string; url: string }[]>(
         profile.links || []
     );
@@ -153,7 +161,53 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                     </div>
                 </div>
                 <div className="grid gap-3">
-                    <Label htmlFor="location">Latitude and longitude</Label>
+                    <Label>Hatch Date</Label>
+                    <div className="space-y-3">
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="w-full justify-start text-left font-normal"
+                                >
+                                    <Egg className="mr-2 h-4 w-4" />
+                                    {birthDate ? format(birthDate, "PPP") : "Pick a date"}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                    mode="single"
+                                    selected={birthDate}
+                                    onSelect={setBirthDate}
+                                    captionLayout="dropdown"
+                                    initialFocus
+                                />
+                            </PopoverContent>
+                        </Popover>
+                        <div className="flex items-center space-x-2">
+                            <Checkbox
+                                id="showAge"
+                                checked={showAge}
+                                onCheckedChange={(checked) => setShowAge(!!checked)}
+                            />
+                            <Label htmlFor="showAge" className="text-sm font-normal">
+                                Show age on profile
+                            </Label>
+                        </div>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setBirthDate(undefined)}
+                            disabled={!birthDate}
+                        >
+                            Clear Date
+                        </Button>
+                        <input type="hidden" name="birthDate" value={birthDate ? birthDate.toISOString() : ""} />
+                        <input type="hidden" name="showAge" value={showAge.toString()} />
+                    </div>
+                </div>
+                <div className="grid gap-3">
+                    <Label htmlFor="location">Latitude and Longitude</Label>
                     <Alert variant="default">
                         <TriangleAlert />
                         <AlertDescription>
@@ -178,8 +232,6 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                             <div 
                                 key={index} 
                                 className="flex gap-2 items-center"
-                                draggable
-                                onDragStart={() => setDraggedIndex(index)}
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={(e) => {
                                     e.preventDefault();
@@ -192,9 +244,13 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                                     }
                                     setDraggedIndex(null);
                                 }}
-                                onDragEnd={() => setDraggedIndex(null)}
                             >
-                                <div className="cursor-grab active:cursor-grabbing">
+                                <div 
+                                    className="cursor-grab active:cursor-grabbing"
+                                    draggable
+                                    onDragStart={() => setDraggedIndex(index)}
+                                    onDragEnd={() => setDraggedIndex(null)}
+                                >
                                     <GripVertical className="h-4 w-4 text-muted-foreground" />
                                 </div>
                                 <Input
@@ -217,14 +273,12 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                                         setLinks(newLinks);
                                     }}
                                 />
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="sm"
+                                <div 
+                                    className="cursor-pointer p-1"
                                     onClick={() => setLinks(links.filter((_, i) => i !== index))}
                                 >
-                                    <X className="h-4 w-4" />
-                                </Button>
+                                    <X className="h-4 w-4 text-muted-foreground" />
+                                </div>
                             </div>
                         ))}
                         <Button
@@ -233,7 +287,6 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                             size="sm"
                             onClick={() => setLinks([...links, { name: '', url: '' }])}
                         >
-                            <Plus className="h-4 w-4 mr-2" />
                             Add Link
                         </Button>
                     </div>

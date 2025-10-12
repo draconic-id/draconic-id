@@ -19,7 +19,8 @@ import {
 
 import ProfileForm from '@/components/profile-form';
 
-import { PencilLine, ExternalLink, Mail } from 'lucide-react';
+import { PencilLine, ExternalLink, Mail, Cake, Egg } from 'lucide-react';
+import { differenceInYears, format } from 'date-fns';
 import { 
     SiTelegram, SiFuraffinity, SiX, SiMastodon, SiBluesky, SiMatrix, SiDiscord, SiDeviantart, SiTiktok, SiYoutube, 
     SiGeocaching, SiCarrd, SiGithub, SiGitlab, SiSpotify, SiPlaystation, SiSteam, SiEa, SiFacebook, SiUbisoft, 
@@ -170,15 +171,32 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
             </h1>
 
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm flex flex-row items-center gap-2" style={{...(profileColors?.backgroundColorCard && { background: profileColors.backgroundColorCard }), ...(profileColors?.backgroundColorMuted && { '--muted': profileColors.backgroundColorMuted }), ...(profileColors?.textColor && { '--foreground': profileColors.textColor })} as React.CSSProperties}>
+            <div className="bg-card border border-border rounded-lg p-6 shadow-sm flex flex-row items-center gap-4" style={{...(profileColors?.backgroundColorCard && { background: profileColors.backgroundColorCard }), ...(profileColors?.backgroundColor&& { '--muted-foreground': profileColors.textColorMuted }), ...(profileColors?.backgroundColorMuted && { '--muted': profileColors.backgroundColorMuted }), ...(profileColors?.textColor && { '--foreground': profileColors.textColor })} as React.CSSProperties}>
                 <Avatar className="border">
                     <AvatarImage src={profile.avatar ? `${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}` : undefined} />
                     <AvatarFallback>{profile.user.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <p>{profile.user.name}</p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <p>{profile.user.name}</p>
+                        {profile.birthDate && (
+                            <span className="text-muted-foreground text-sm flex items-center gap-1">
+                                {profile.showAge ? (
+                                    <>
+                                        <Egg className="w-4 h-4" />
+                                        {format(new Date(profile.birthDate), 'MMM d')} ({differenceInYears(new Date(), new Date(profile.birthDate))} y.o.)
+                                    </>
+                                ) : (
+                                    <>
+                                        <Cake className="w-4 h-4" />
+                                        {format(new Date(profile.birthDate), 'MMM d')}
+                                    </>
+                                )}
+                            </span>
+                        )}
+                    </div>
                     {profile.links && Array.isArray(profile.links) && profile.links.length > 0 && (
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex gap-2 mt-1 flex-wrap">
                             {(profile.links as { name: string; url: string }[]).map((link, index) => {
                                 const IconComponent = getLinkIcon(link.name);
                                 return (

@@ -93,6 +93,7 @@ model Profile {
   longitude  Float?
   latitude   Float?
   birthDate  DateTime?
+  showAge    Boolean   @default(false)
   links      Json?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt

@@ -37,6 +37,8 @@ export async function updateProfile(formData: FormData) {
   const latitudeStr = formData.get('latitude') as string;
   const longitudeStr = formData.get('longitude') as string;
   const privacy = formData.get('privacy') as string;
+  const birthDateStr = formData.get('birthDate') as string;
+  const showAgeStr = formData.get('showAge') as string;
   const linksStr = formData.get('links') as string;
 
   // Get current profile to check for existing avatar
@@ -137,6 +139,8 @@ export async function updateProfile(formData: FormData) {
     latitude,
     longitude,
     privacy: privacy || 'PUBLIC',
+    birthDate: birthDateStr ? new Date(birthDateStr) : null,
+    showAge: showAgeStr === 'true',
     links,
     user: {
       update: {
