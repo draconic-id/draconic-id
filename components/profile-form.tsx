@@ -8,7 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import LocationPicker from '@/components/location-picker';
-import { Info, TriangleAlert } from 'lucide-react';
+import { Info, TriangleAlert, Plus, X, GripVertical } from 'lucide-react';
 
 interface ProfileFormProps {
     action: (formData: FormData) => void;
@@ -19,11 +19,16 @@ interface ProfileFormProps {
         latitude: number | null;
         longitude: number | null;
         privacy: 'PUBLIC' | 'UNLISTED' | 'HIDDEN' | 'PRIVATE';
+        links: { name: string; url: string }[] | null;
     };
 }
 
 export default function ProfileForm({ action, profile }: ProfileFormProps) {
     const [showColorPicker, setShowColorPicker] = useState(!!profile.color);
+    const [links, setLinks] = useState<{ name: string; url: string }[]>(
+        profile.links || []
+    );
+    const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         const formData = new FormData(e.currentTarget);
@@ -159,6 +164,80 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                         initialLatitude={profile.latitude || undefined}
                         initialLongitude={profile.longitude || undefined}
                     />
+                </div>
+                <div className="grid gap-3">
+                    <Label>Links</Label>
+                    <Alert variant="default">
+                        <Info />
+                        <AlertDescription>
+                            <p>Special icons are automatically inserted when you name your link after common sites like "Telegram" or "VRChat".</p>
+                        </AlertDescription>
+                    </Alert>
+                    <div className="space-y-2">
+                        {links.map((link, index) => (
+                            <div 
+                                key={index} 
+                                className="flex gap-2 items-center"
+                                draggable
+                                onDragStart={() => setDraggedIndex(index)}
+                                onDragOver={(e) => e.preventDefault()}
+                                onDrop={(e) => {
+                                    e.preventDefault();
+                                    if (draggedIndex !== null && draggedIndex !== index) {
+                                        const newLinks = [...links];
+                                        const draggedItem = newLinks[draggedIndex];
+                                        newLinks.splice(draggedIndex, 1);
+                                        newLinks.splice(index, 0, draggedItem);
+                                        setLinks(newLinks);
+                                    }
+                                    setDraggedIndex(null);
+                                }}
+                                onDragEnd={() => setDraggedIndex(null)}
+                            >
+                                <div className="cursor-grab active:cursor-grabbing">
+                                    <GripVertical className="h-4 w-4 text-muted-foreground" />
+                                </div>
+                                <Input
+                                    name={`link-name-${index}`}
+                                    placeholder="Name"
+                                    value={link.name}
+                                    onChange={(e) => {
+                                        const newLinks = [...links];
+                                        newLinks[index].name = e.target.value;
+                                        setLinks(newLinks);
+                                    }}
+                                />
+                                <Input
+                                    name={`link-url-${index}`}
+                                    placeholder="https://example.com"
+                                    value={link.url}
+                                    onChange={(e) => {
+                                        const newLinks = [...links];
+                                        newLinks[index].url = e.target.value;
+                                        setLinks(newLinks);
+                                    }}
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setLinks(links.filter((_, i) => i !== index))}
+                                >
+                                    <X className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ))}
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setLinks([...links, { name: '', url: '' }])}
+                        >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add Link
+                        </Button>
+                    </div>
+                    <input type="hidden" name="links" value={JSON.stringify(links)} />
                 </div>
 
             </div>

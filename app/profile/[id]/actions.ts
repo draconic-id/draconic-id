@@ -37,6 +37,7 @@ export async function updateProfile(formData: FormData) {
   const latitudeStr = formData.get('latitude') as string;
   const longitudeStr = formData.get('longitude') as string;
   const privacy = formData.get('privacy') as string;
+  const linksStr = formData.get('links') as string;
 
   // Get current profile to check for existing avatar
   const originalProfile = await prisma.profile.findUnique({
@@ -113,6 +114,22 @@ export async function updateProfile(formData: FormData) {
     longitude = lng;
   }
 
+  let links = null;
+  if (linksStr) {
+    try {
+      const parsedLinks = JSON.parse(linksStr);
+      if (Array.isArray(parsedLinks)) {
+        // Filter out empty links
+        const filteredLinks = parsedLinks.filter(link => 
+          link.name && link.name.trim() !== '' && link.url && link.url.trim() !== ''
+        );
+        links = filteredLinks.length > 0 ? filteredLinks : null;
+      }
+    } catch (error) {
+      console.error('Failed to parse links:', error);
+    }
+  }
+
   const updateData: any = {
     tagline: tagline || null,
     background: background || null,
@@ -120,6 +137,7 @@ export async function updateProfile(formData: FormData) {
     latitude,
     longitude,
     privacy: privacy || 'PUBLIC',
+    links,
     user: {
       update: {
         name: name || session.user.name
