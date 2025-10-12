@@ -92,7 +92,7 @@ model Profile {
   privacy    Privacy   @default(PUBLIC)
   longitude  Float?
   latitude   Float?
-  birthDate  DateTime?
+  birthDate  DateTime? @db.Date
   showAge    Boolean   @default(false)
   links      Json?
   createdAt  DateTime  @default(now())

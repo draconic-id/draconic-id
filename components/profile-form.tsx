@@ -14,6 +14,21 @@ import LocationPicker from '@/components/location-picker';
 import { Info, TriangleAlert, Plus, X, GripVertical, Egg } from 'lucide-react';
 import { format } from 'date-fns';
 
+function toUtcDate(date: Date | undefined) {
+    if (!date) return undefined;
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+}
+
+function fromUtcDate(date: Date | undefined) {
+    if (!date) return undefined;
+    // Converts UTC midnight -> local date at same calendar day
+    return new Date(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate()
+    );
+}
+
 interface ProfileFormProps {
     action: (formData: FormData) => void;
     profile: {
@@ -174,8 +189,8 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                             <PopoverContent className="w-auto p-0">
                                 <Calendar
                                     mode="single"
-                                    selected={birthDate}
-                                    onSelect={setBirthDate}
+                                    selected={fromUtcDate(birthDate)}
+                                    onSelect={(d) => setBirthDate(toUtcDate(d))}
                                     captionLayout="dropdown"
                                     initialFocus
                                 />
@@ -200,7 +215,11 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                         >
                             Clear Date
                         </Button>
-                        <input type="hidden" name="birthDate" value={birthDate ? birthDate.toISOString() : ""} />
+                        <input
+                            type="hidden"
+                            name="birthDate"
+                            value={birthDate ? birthDate.toISOString() : ""}
+                        />
                         <input type="hidden" name="showAge" value={showAge.toString()} />
                     </div>
                 </div>
@@ -227,8 +246,8 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                     </Alert>
                     <div className="space-y-2">
                         {links.map((link, index) => (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className="flex gap-2 items-center"
                                 onDragOver={(e) => e.preventDefault()}
                                 onDrop={(e) => {
@@ -243,7 +262,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                                     setDraggedIndex(null);
                                 }}
                             >
-                                <div 
+                                <div
                                     className="cursor-grab active:cursor-grabbing"
                                     draggable
                                     onDragStart={() => setDraggedIndex(index)}
@@ -271,7 +290,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                                         setLinks(newLinks);
                                     }}
                                 />
-                                <div 
+                                <div
                                     className="cursor-pointer p-1"
                                     onClick={() => setLinks(links.filter((_, i) => i !== index))}
                                 >
