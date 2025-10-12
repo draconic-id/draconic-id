@@ -54,7 +54,10 @@ export default function MapPicker({ initialLatitude, initialLongitude, latitude,
                 onClick={handleMapClick}
                 onLoad={() => {
                     const map = mapRef.current?.getMap?.();
-                    if (map) map.setConfigProperty('basemap', 'lightPreset', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day');
+                    if (map) {
+                        map.setConfigProperty('basemap', 'lightPreset', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day');
+                        setTimeout(() => map.resize(), 0);
+                    }
                 }}
             >
                 <NavigationControl position="bottom-left" />
