@@ -30,7 +30,8 @@ export default function Page() {
           <div className="space-y-8">
             <div id="who-is-draconic-id-for" className="scroll-mt-16">
               <h2 className="text-xl font-semibold mb-3">Who is Draconic ID intended for?</h2>
-              <p className="text-lg leading-relaxed">Anyone who has an identity as a dragon. It is broad, and that is on purpose. We do not act as gatekeepers, and we trust our users to invite people who would be a good fit.</p>
+              <p className="text-lg leading-relaxed mb-4">We want to include anyone who has an identity as a dragon. It is broad, and that is on purpose. We do not act as gatekeepers, and we trust our users to invite people who would be a good fit.</p>
+              <p className="text-lg leading-relaxed">With that said, a hard requirement is that you need to be a legal adult in your jurisdiction. This requirement exists not because Draconic ID contains adult content, but because we do not have the resources to comply with the additional laws that apply when handling data from minors. If you suspect someone on the platform is a minor, please contact us.</p>
             </div>
 
             <div id="how-did-draconic-id-come-to-be" className="scroll-mt-16">
