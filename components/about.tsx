@@ -182,9 +182,6 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
     setHasUnsavedChanges(false);
   };
 
-  console.log("text color muted")
-  console.log(textColorMuted)
-
   return (
     <>
       <h1>

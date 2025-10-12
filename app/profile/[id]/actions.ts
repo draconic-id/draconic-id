@@ -74,8 +74,6 @@ export async function updateProfile(formData: FormData) {
         key = `avatars/${randomUUID()}`;
       } while (await minio.statObject(BUCKET, key).then(() => true, () => false));
 
-      console.log("Code reaches this!")
-      console.log(process.env.MINIO_SECRET_KEY)
       await minio.putObject(BUCKET, key, webp, webp.length, {
         "Content-Type": "image/webp",
         "X-Amz-Meta-Original-Filename": avatarFile.name,

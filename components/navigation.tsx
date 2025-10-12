@@ -26,8 +26,6 @@ export default async function Navigation() {
         })
     }
 
-    console.log(profile);
-
     return (
         <NavigationMenu viewport={false} className="fixed block left-1/2 -translate-x-1/2 border z-50 bg-background/50 backdrop-blur-md rounded-sm pl-2 pr-2 pt-1 pb-1 mt-1">
             <NavigationMenuList>

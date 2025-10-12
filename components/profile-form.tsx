@@ -52,8 +52,6 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
         }
     };
 
-    console.log(profile.privacy);
-
     return (
         <form action={action} onSubmit={handleSubmit}>
             <div className="grid gap-4 mt-8 mb-8">
