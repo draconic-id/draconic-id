@@ -75,7 +75,11 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
             totalSize += value instanceof File ? value.size : new Blob([value]).size;
         }
         if (totalSize > sizeLimit) {
-            alert('Your profile could not be saved. The data you entered exceeds the size limit.');
+            // alert user
+            toast.error("Your profile could not be saved because the size limit was exceeded.")
+            // enable save buttons
+            setSavePending(false);
+            // return early
             return
         }
 
