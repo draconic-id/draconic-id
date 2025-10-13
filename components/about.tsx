@@ -12,7 +12,6 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import UnderlineExt from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import SuperscriptExt from '@tiptap/extension-superscript';
 import SubscriptExt from '@tiptap/extension-subscript';
@@ -106,7 +105,6 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
   const editor = useEditor({
     extensions: [
       StarterKit,
-      UnderlineExt,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       SuperscriptExt,
       SubscriptExt,
