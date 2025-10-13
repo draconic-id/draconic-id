@@ -14,6 +14,7 @@ import LocationPicker from '@/components/location-picker';
 import { Info, TriangleAlert, Plus, X, GripVertical, Egg } from 'lucide-react';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 function toUtcDate(date: Date | undefined) {
     if (!date) return undefined;
@@ -78,14 +79,13 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
             return
         }
 
-        // execute server action
+        // execute server action and refresh page
         await action(formData)
-
-        // refresh page, calls placed after the refresh are not executed reliably
         router.refresh();
 
         // enable save buttons
         setSavePending(false);
+        toast.success("Your profile information was updated successfully.");
     };
 
     return (
@@ -333,9 +333,6 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
 
             </div>
             <DialogFooter>
-                {/* <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
-                </DialogClose> */}
                 <Button type="submit" disabled={savePending} aria-disabled={savePending}>
                     {savePending ? 'Saving…' : 'Save'}
                 </Button>

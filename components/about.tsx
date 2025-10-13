@@ -21,6 +21,7 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Youtube from '@tiptap/extension-youtube';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
+import { toast } from 'sonner';
 
 // --- Custom Image extension that persists a `width` attribute and renders it into inline style ---
 interface CustomImageAttrs {
@@ -182,6 +183,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
     setIsFormVisible(false);
     setHasUnsavedChanges(false);
     setSavePending(false);
+    toast.success("Your about information was updated successfully.");
   };
 
   return (
@@ -414,7 +416,8 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
               [&>div>em]:italic
               [&>div>sup]:text-xs [&>div>sup]:align-super
               [&>div>sub]:text-xs [&>div>sub]:align-sub
-              [&>div>*:last-child]:mb-0"
+              [&>div>*:last-child]:mb-0
+              [&>div>*:first-child]:mt-0"
           />
         )}
 

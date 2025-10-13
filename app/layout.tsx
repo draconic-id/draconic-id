@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Merriweather, Merriweather_Sans } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/navigation";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
         <Navigation/>
+        <Toaster position="bottom-center"/>
         {children}
       </body>
     </html >
