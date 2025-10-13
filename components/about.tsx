@@ -385,7 +385,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
             editor={editor}
             style={{ ...(textColor && { color: textColor, '--foreground': textColor }), ...(textColorMuted && { '--muted-foreground': textColorMuted }) } as React.CSSProperties}
             className="prose-sm max-w-none
-              [&>div]:outline-none [&>div]:min-h-[100px]
+              [&>div]:outline-none
               [&>div>h1]:text-2xl [&>div>h1]:font-bold [&>div>h1]:mb-4 [&>div>h1]:mt-0
               [&>div>h2]:text-xl [&>div>h2]:font-semibold [&>div>h2]:mb-3 [&>div>h2]:mt-6
               [&>div>h3]:text-lg [&>div>h3]:font-medium [&>div>h3]:mb-2 [&>div>h3]:mt-4
