@@ -266,7 +266,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                     <Alert variant="default">
                         <Info />
                         <AlertDescription>
-                            <p>Special icons are automatically inserted when you name your link after common sites like "Telegram" or "VRChat".</p>
+                            <p>Special icons are automatically inserted for links to common sites like Telegram or Discord.</p>
                         </AlertDescription>
                     </Alert>
                     <div className="space-y-2">
