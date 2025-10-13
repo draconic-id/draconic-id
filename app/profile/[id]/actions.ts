@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { Client as Minio } from "minio";
 import sharp from "sharp";
 import { randomUUID } from "crypto";
+import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
@@ -205,6 +206,7 @@ export async function updateProfile(formData: FormData) {
     data: updateData
   });
 
+  revalidatePath(`/profile/${profile.id}`);
   redirect(`/profile/${profile.id}`);
 }
 
@@ -224,5 +226,6 @@ export async function updateAbout(formData: FormData) {
     data: { about: about || null }
   });
 
+  revalidatePath(`/profile/${profile.id}`);
   redirect(`/profile/${profile.id}`);
 }

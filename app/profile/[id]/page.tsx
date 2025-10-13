@@ -1,3 +1,8 @@
+// force the page to be dynamic
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+// imports
 import type { Metadata } from 'next';
 
 import { notFound, redirect } from 'next/navigation';
@@ -47,7 +52,7 @@ function getLinkIcon(url?: string): IconType {
   if (host.endsWith('t.me') || host.endsWith('telegram.me')) return SiTelegram;
   if (host.includes('furaffinity.net')) return SiFuraffinity;
   if (host.includes('twitter.com') || host.includes('x.com')) return SiX;
-  if (host.includes('mastodon')) return SiMastodon;
+  if (host.includes('mastodon.social') || host.includes('mastodon.online') || host.includes('dragonchat.org') || host.includes('dragon.style')) return SiMastodon;
   if (host.includes('bsky.app')) return SiBluesky;
   if (host.includes('matrix.to') || host.includes('matrix.org')) return SiMatrix;
   if (host.includes('discord.gg') || host.includes('discord.com')) return SiDiscord;
@@ -108,20 +113,21 @@ export async function generateMetadata(
         where: { id },
         select: {
             privacy: true,
+            tagline: true,
             user: { select: { name: true } },
         },
     });
 
     if (!profile) {
-        // No profile found: don't index the 404
-        return { robots: { index: false, follow: false } };
+        return { robots: { index: false, follow: false } }; // no profile found, don't index the 404
     }
 
     return {
         title: profile.user?.name ? `Profile of ${profile.user.name}` : 'Profile',
+        description: profile.tagline ? profile.tagline : 'A profile on Draconi ID',
         robots: (profile.privacy === 'PUBLIC')
-            ? { index: true, follow: true } // <meta name="robots" content="noindex,nofollow">
-            : { index: false, follow: false },  // <meta name="robots" content="index,follow">
+            ? { index: true, follow: true } // allow search engines to index
+            : { index: false, follow: false },  // don't allow search engines to index
     };
 }
 

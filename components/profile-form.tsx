@@ -57,13 +57,12 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
         const formData = new FormData(e.currentTarget);
         let totalSize = 0;
         for (const [, value] of formData.entries()) {
-            if (value instanceof File) totalSize += value.size;
-            else totalSize += new Blob([value]).size;
+            totalSize += value instanceof File ? value.size : new Blob([value]).size;
         }
+
         if (totalSize > 1024 * 1024) {
             e.preventDefault();
             alert('Your profile could not be saved. The data you entered exceeds the size limit.');
-            return;
         }
     };
 
