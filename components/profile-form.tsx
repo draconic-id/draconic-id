@@ -13,6 +13,16 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import LocationPicker from '@/components/location-picker';
 import { Info, TriangleAlert, Plus, X, GripVertical, Egg } from 'lucide-react';
 import { format } from 'date-fns';
+import { useFormStatus } from 'react-dom'
+
+function SubmitButton() {
+  const { pending } = useFormStatus()
+  return (
+    <Button type="submit" disabled={pending} aria-disabled={pending}>
+      {pending ? 'Saving…' : 'Save changes'}
+    </Button>
+  )
+}
 
 function toUtcDate(date: Date | undefined) {
     if (!date) return undefined;
@@ -314,7 +324,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                 <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save changes</Button>
+                <SubmitButton />
             </DialogFooter>
         </form>
     );

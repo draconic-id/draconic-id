@@ -6,12 +6,16 @@ import { headers } from "next/headers";
 const prisma = new PrismaClient();
 
 export default async function Page() {
+  const headersResult = await headers();
+
   const session = await auth.api.getSession({
-    headers: await headers() // you need to pass the headers object.
+    headers: headersResult // you need to pass the headers object.
   })
 
+  console.log('session on /profile', session)
+
   if (!session?.user.id) {
-    redirect((await auth.api.signInSocial({ headers: await headers(), body: { provider: 'draconic-id', callbackURL: '/profile' } })).url || "")
+    redirect((await auth.api.signInSocial({ headers: headersResult, body: { provider: 'draconic-id', callbackURL: '/profile' } })).url || "")
   }
 
   const profile = await prisma.profile.findUnique({
