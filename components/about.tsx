@@ -69,9 +69,9 @@ const CustomImage = ImageExt.extend({
       // New command so we can type width as a string without fighting Image's SetImageOptions type
       insertCustomImage:
         (attrs: CustomImageAttrs) =>
-        ({ chain }) => {
-          return chain().insertContent({ type: this.name, attrs }).run();
-        },
+          ({ chain }) => {
+            return chain().insertContent({ type: this.name, attrs }).run();
+          },
     };
   },
 });
@@ -101,6 +101,8 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
   const [imageWidth, setImageWidth] = useState('');
   const [imageAlt, setImageAlt] = useState('');
   const [youtubeUrl, setYoutubeUrl] = useState('');
+
+  const [savePending, setSavePending] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -166,6 +168,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
   };
 
   const handleSave = async (formData: FormData) => {
+    setSavePending(true);
     if (editor) {
       let content = editor.getHTML();
       // Remove trailing empty paragraphs
@@ -178,6 +181,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
     }
     setIsFormVisible(false);
     setHasUnsavedChanges(false);
+    setSavePending(false);
   };
 
   return (
@@ -185,7 +189,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
       <h1>
         About Me {editable && <PencilLine onClick={toggleForm} className="cursor-pointer inline h-4 w-4" />}
       </h1>
-      <div className="bg-card border border-border rounded-lg p-6 shadow-sm text-foreground relative" style={{...(backgroundColorCard && { background: backgroundColorCard }), ...(backgroundColorMuted && { '--muted': backgroundColorMuted })} as React.CSSProperties}>
+      <div className="bg-card border border-border rounded-lg p-6 shadow-sm text-foreground relative" style={{ ...(backgroundColorCard && { background: backgroundColorCard }), ...(backgroundColorMuted && { '--muted': backgroundColorMuted }) } as React.CSSProperties}>
         {isFormVisible && editor && (
           <>
             <div className="sticky top-14 z-10 p-3 border border-border rounded-lg bg-background/50 backdrop-blur-sm overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
@@ -377,7 +381,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
         ) : (
           <EditorContent
             editor={editor}
-            style={{...(textColor && { color: textColor, '--foreground': textColor }), ...(textColorMuted && { '--muted-foreground': textColorMuted })} as React.CSSProperties}
+            style={{ ...(textColor && { color: textColor, '--foreground': textColor }), ...(textColorMuted && { '--muted-foreground': textColorMuted }) } as React.CSSProperties}
             className="prose-sm max-w-none
               [&>div]:outline-none [&>div]:min-h-[100px]
               [&>div>h1]:text-2xl [&>div>h1]:font-bold [&>div>h1]:mb-4 [&>div>h1]:mt-0
@@ -418,7 +422,9 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
           <>
             <br /><Separator /><br />
             <form className="flex flex-col gap-3" ref={formRef} action={handleSave}>
-              <Button type="submit">Save changes</Button>
+              <Button type="submit" disabled={savePending} aria-disabled={savePending}>
+                {savePending ? 'Saving changes…' : 'Save changes'}
+              </Button>
             </form>
           </>
         )}

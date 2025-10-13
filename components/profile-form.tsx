@@ -13,16 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import LocationPicker from '@/components/location-picker';
 import { Info, TriangleAlert, Plus, X, GripVertical, Egg } from 'lucide-react';
 import { format } from 'date-fns';
-import { useFormStatus } from 'react-dom'
-
-function SubmitButton() {
-  const { pending } = useFormStatus()
-  return (
-    <Button type="submit" disabled={pending} aria-disabled={pending}>
-      {pending ? 'Saving…' : 'Save changes'}
-    </Button>
-  )
-}
+import { useRouter } from 'next/navigation';
 
 function toUtcDate(date: Date | undefined) {
     if (!date) return undefined;
@@ -56,6 +47,7 @@ interface ProfileFormProps {
 
 export default function ProfileForm({ action, profile }: ProfileFormProps) {
     const [showColorPicker, setShowColorPicker] = useState(!!profile.color);
+    const [savePending, setSavePending] = useState(false);
     const [birthDate, setBirthDate] = useState<Date | undefined>(profile.birthDate || undefined);
     const [showAge, setShowAge] = useState(profile.showAge);
     const [links, setLinks] = useState<{ name: string; url: string }[]>(
@@ -63,17 +55,37 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
     );
     const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        // disable save buttons
+        setSavePending(true);
+
+        // disable browser's default handling of forms
+        e.preventDefault();
+
+        //retrieve form data
         const formData = new FormData(e.currentTarget);
+
+        // check whether size limit is not exceeded
+        const sizeLimit = 1024 * 2024 // size limit in bytes
         let totalSize = 0;
         for (const [, value] of formData.entries()) {
             totalSize += value instanceof File ? value.size : new Blob([value]).size;
         }
-
-        if (totalSize > 1024 * 1024) {
-            e.preventDefault();
+        if (totalSize > sizeLimit) {
             alert('Your profile could not be saved. The data you entered exceeds the size limit.');
+            return
         }
+
+        // execute server action
+        await action(formData)
+
+        // refresh page, calls placed after the refresh are not executed reliably
+        router.refresh();
+
+        // enable save buttons
+        setSavePending(false);
     };
 
     return (
@@ -321,10 +333,12 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
 
             </div>
             <DialogFooter>
-                <DialogClose asChild>
+                {/* <DialogClose asChild>
                     <Button variant="outline">Cancel</Button>
-                </DialogClose>
-                <SubmitButton />
+                </DialogClose> */}
+                <Button type="submit" disabled={savePending} aria-disabled={savePending}>
+                    {savePending ? 'Saving…' : 'Save'}
+                </Button>
             </DialogFooter>
         </form>
     );

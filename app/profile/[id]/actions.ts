@@ -207,7 +207,7 @@ export async function updateProfile(formData: FormData) {
   });
 
   revalidatePath(`/profile/${profile.id}`);
-  return redirect(`/profile/${profile.id}`);
+  return
 }
 
 export async function updateAbout(formData: FormData) {
@@ -227,5 +227,5 @@ export async function updateAbout(formData: FormData) {
   });
 
   revalidatePath(`/profile/${profile.id}`);
-  redirect(`/profile/${profile.id}`);
+  return
 }
