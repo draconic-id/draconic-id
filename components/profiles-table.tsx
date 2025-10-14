@@ -255,7 +255,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="px-1"
           >
-            Last update
+            Updated
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),

@@ -7,26 +7,11 @@ const prisma = new PrismaClient();
 
 import ProfilesTable from "@/components/profiles-table";
 
-// Cache TTL (seconds)
-export const revalidate = 600;
-
-export const metadata = { title: "Profiles" };
+export const metadata = { title: "Directory" };
 
 export default async function Page() {
     const session = await auth.api.getSession({ headers: await headers() });
     const viewerId = session?.user?.id ?? null;
-
-    // Privacy filter with string literals only
-    const visibilityFilter = !viewerId
-        ? {
-            OR: [{ privacy: "PUBLIC" }, { privacy: "UNLISTED" }],
-        }
-        : {
-            OR: [
-                { OR: [{ privacy: "PUBLIC" }, { privacy: "UNLISTED" }, { privacy: "HIDDEN" }] },
-                { AND: [{ privacy: "PRIVATE" }, { userId: viewerId }] },
-            ],
-        };
 
     const profiles = await prisma.profile.findMany({
         where: {
@@ -83,8 +68,17 @@ export default async function Page() {
     }));
 
     return (
-        <div className="p-6 space-y-6 pt-16">
-            <ProfilesTable data={rows} viewerCoords={viewerCoords} />
-        </div>
+        <>
+            <div className="h-16 w-1" />
+            <div className="flex flex-col items-center max-w-6xl mx-auto px-6 py-20">
+                <div className="text-center">
+                    <h1 className="text-4xl font-bold mb-4">Your dragon address book</h1>
+                    <p className="text-lg">{`This directory lists all dragons that have made their profile visible. Search for names,${session ? " see who's nearby," : ""} check upcoming birthdays and more. You can also query profile information programatically using our APIs. More information about this will be available soon.`}</p>
+                </div>
+            </div>
+            <div className="p-6 max-w-7xl py-20 ml-auto mr-auto">
+                <ProfilesTable data={rows} viewerCoords={viewerCoords} />
+            </div>
+        </>
     );
 }

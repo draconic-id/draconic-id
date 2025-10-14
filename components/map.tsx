@@ -126,7 +126,7 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                             >
                                 <div>
                                     <span className="text-black text-base">
-                                        <span className='text-xl'>{profile.user.name}</span><br />
+                                        <span className='text-xl font-bold'>{profile.user.name}</span><br />
                                         {profile.tagline}<br /><br />
                                     </span>
 

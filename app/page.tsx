@@ -13,18 +13,23 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatedSpan, Terminal, TypingAnimation } from '@/components/ui/terminal';
 import LandingMap from '@/components/landing-map';
+import { auth } from '@/lib/auth';
 
 import ResponsiveScale from "@/components/responsive-scale";
+import { headers } from 'next/headers';
 
-export default function Page() {
+export default async function Page() {
+      const session = await auth.api.getSession({
+          headers: await headers() // you need to pass the headers object.
+      })
   return (
     <>
       <div className="w-1 h-16" />
       <div className="flex flex-col items-center max-w-6xl mx-auto px-6 py-20">
         <img src="/logo.svg" alt="Draconic ID logo" className="w-64 h-64 mb-8" />
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Welcome home, dragon</h1>
-          <p className="text-lg">Welcome to the gateway to all things draconic, your place on the internet.</p>
+          <h1 className="text-4xl font-bold mb-4">{`Welcome home, ${session ? session.user.name : 'dragon'}`}</h1>
+          <p className="text-lg">Welcome to the gateway for all things draconic, your place on the internet.</p>
         </div>
       </div>
 

@@ -5,6 +5,7 @@ import { headers } from "next/headers";
 
 import { PrismaClient } from '@/prisma/generated';
 import { userAgent } from "next/server";
+import { House } from "lucide-react";
 const prisma = new PrismaClient();
 
 
@@ -31,7 +32,7 @@ export default async function Navigation() {
             <NavigationMenuList>
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild>
-                        <Link href="/">Home</Link>
+                        <Link href="/"><House className="text-accent-foreground" /></Link>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
@@ -42,6 +43,11 @@ export default async function Navigation() {
                 <NavigationMenuItem>
                     <NavigationMenuLink asChild>
                         <Link href="/map">Map</Link>
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <NavigationMenuLink asChild>
+                        <Link href="/list">List</Link>
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
