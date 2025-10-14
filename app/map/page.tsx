@@ -27,7 +27,10 @@ export default async function Page() {
         include: {
             user: true,
         },
-    })
+        orderBy: {
+            id: 'desc'
+        }
+    }).then(profiles => profiles.sort(() => Math.random() - 0.5))
 
     return (
         <>

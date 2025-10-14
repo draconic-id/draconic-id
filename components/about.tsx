@@ -6,6 +6,7 @@ import { PencilLine, Bold, Italic, Strikethrough, Underline, Heading1, Heading2,
 
 import { Separator } from './ui/separator';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './ui/alert-dialog';
 import { Input } from './ui/input';
@@ -196,18 +197,39 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
           <>
             <div className="sticky top-14 z-10 p-3 border border-border rounded-lg bg-background/50 backdrop-blur-sm overflow-x-auto scrollbar-hide [-webkit-overflow-scrolling:touch]">
               <div className="flex gap-1 justify-center min-w-max">
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'bg-accent' : ''}>
-                  <Bold className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'bg-accent' : ''}>
-                  <Italic className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive('underline') ? 'bg-accent' : ''}>
-                  <Underline className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'bg-accent' : ''}>
-                  <Strikethrough className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBold().run()} className={editor.isActive('bold') ? 'bg-accent' : ''}>
+                        <Bold className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Bold</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleItalic().run()} className={editor.isActive('italic') ? 'bg-accent' : ''}>
+                        <Italic className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Italic</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleUnderline().run()} className={editor.isActive('underline') ? 'bg-accent' : ''}>
+                        <Underline className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Underline</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleStrike().run()} className={editor.isActive('strike') ? 'bg-accent' : ''}>
+                        <Strikethrough className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Strikethrough</TooltipContent>
+                  </Tooltip>
                 <Separator orientation="vertical" className="h-8" />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -293,12 +315,22 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'bg-accent' : ''}>
-                  <Quote className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'bg-accent' : ''}>
-                  <Code className="h-4 w-4" />
-                </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'bg-accent' : ''}>
+                        <Quote className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Quote</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={editor.isActive('codeBlock') ? 'bg-accent' : ''}>
+                        <Code className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Code Block</TooltipContent>
+                  </Tooltip>
                 <Separator orientation="vertical" className="h-8" />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -328,16 +360,31 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                 </DropdownMenu>
 
                 <Separator orientation="vertical" className="h-8" />
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleSuperscript().run()} className={editor.isActive('superscript') ? 'bg-accent' : ''}>
-                  <Superscript className="h-4 w-4" />
-                </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleSubscript().run()} className={editor.isActive('subscript') ? 'bg-accent' : ''}>
-                  <Subscript className="h-4 w-4" />
-                </Button>
-                <Separator orientation="vertical" className="h-8" />
-                <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                  <Minus className="h-4 w-4" />
-                </Button>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleSuperscript().run()} className={editor.isActive('superscript') ? 'bg-accent' : ''}>
+                        <Superscript className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Superscript</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleSubscript().run()} className={editor.isActive('subscript') ? 'bg-accent' : ''}>
+                        <Subscript className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Subscript</TooltipContent>
+                  </Tooltip>
+                  <Separator orientation="vertical" className="h-8" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Horizontal Rule</TooltipContent>
+                  </Tooltip>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button type="button" variant="ghost" size="sm">
@@ -372,6 +419,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                </TooltipProvider>
               </div>
             </div>
             <br /><Separator /><br />
