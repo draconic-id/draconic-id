@@ -8,7 +8,13 @@ Draconic ID is available at [https://draconic.id](https://draconic.id).
 
 ## 📄 Licensing
 
-This project is open-source, but is not yet freely licensed. Such a license will be added at a future date.
+This project is open-source, and will soon be freely licensed. Such a license will be added at a future date. The properties of this license will be:
+- You may fork the project.
+- Forks must stay open-source.
+- When forking, give credit to the original project.
+- We do not take any liability.
+- You may not use it commercially.
+- Do not use our trademarks, icons, or names.
 
 ## 🤝 Contributing
 
@@ -49,7 +55,7 @@ The following environment variables can be configured:
 
 **Reverse Proxy (Traefik):**
 
-- `TRAEFIK_HOST` - Host domain for routing (e.g., `Host(\`draconic.id\`)`)
+- `TRAEFIK_HOST` - Host domain for routing (e.g., `Host('draconic.id')`)
 - `TRAEFIK_TLS_ENABLED` - Enable TLS/SSL (e.g., `true`)
 - `TRAEFIK_CERT_RESOLVER` - Certificate resolver name (e.g., `lets-encrypt`)
 - `TRAEFIK_SERVICE_PORT` - Service port for load balancer (e.g., `3000`)
