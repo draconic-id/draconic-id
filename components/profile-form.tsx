@@ -101,7 +101,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                 </div>
                 <div className="grid gap-3">
                     <Label htmlFor="tagline">Tagline</Label>
-                    <Input id="tagline" name="tagline" defaultValue={profile.tagline || ''} placeholder="A western dragon with black scales and blue eyes." />
+                    <Input id="tagline" name="tagline" maxLength={128} defaultValue={profile.tagline || ''} placeholder="A western dragon with black scales and blue eyes." />
                 </div>
                 <div className="grid gap-3">
                     <Label htmlFor="banner">Avatar</Label>

@@ -84,7 +84,7 @@ model Verification {
 
 model Profile {
   id         String    @id @default(nanoid(16))
-  tagline    String?
+  tagline    String?   @db.VarChar(128)
   avatar     String?
   background String?
   about      String?
