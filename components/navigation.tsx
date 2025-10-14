@@ -63,7 +63,7 @@ export default async function Navigation() {
                                     <Link href="https://auth.draconic.id/if/user/#/settings">Settings</Link>
                                 </NavigationMenuLink>
                                 <NavigationMenuLink asChild>
-                                    <Link href="/api/auth/signout">Sign out</Link>
+                                    <a href="/api/auth/signout">Sign out</a>
                                 </NavigationMenuLink>
                             </>
                             :
