@@ -217,7 +217,8 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
                                     selected={fromUtcDate(birthDate)}
                                     onSelect={(d) => setBirthDate(toUtcDate(d))}
                                     captionLayout="dropdown"
-                                    initialFocus
+                                    defaultMonth={fromUtcDate(birthDate)}
+                                    autoFocus
                                 />
                             </PopoverContent>
                         </Popover>
