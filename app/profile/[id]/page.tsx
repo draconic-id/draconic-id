@@ -36,6 +36,9 @@ import {
 import { IconType } from 'react-icons';
 
 import { PrismaClient } from '@/prisma/generated';
+import FooterController from '@/components/footer/footer-controller';
+import Footer from '@/components/footer';
+import { FooterProvider } from '@/components/footer/footer-context';
 
 const prisma = new PrismaClient();
 
@@ -172,7 +175,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     return (
         <div className="w-full min-h-dvh" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
             <div className="max-w-4xl mx-auto px-4">
-                <div className="w-1 h-16" />
+                <div className="w-1 h-[calc(9rem-1lh)]" />
                 <h1>
                     Profile <Dialog>
                         <DialogTrigger>{editable && <PencilLine className='cursor-pointer inline h-4 w-4' />}</DialogTrigger>
@@ -248,6 +251,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 />
                 <div className="w-1 h-16" />
             </div>
+            <FooterController visible={false}/>
+            <FooterProvider>
+            <Footer/>
+            </FooterProvider>
         </div>
     )
 }
