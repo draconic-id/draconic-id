@@ -174,7 +174,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     const profileColors = profile.color ? getProfileColors(profile.color) : null;
 
     return (
-        <div className="w-full min-h-dvh" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
+        <div className="w-full min-h-dvh relative" style={profileColors ? { backgroundColor: profileColors.backgroundColor, color: profileColors.textColor } : {}}>
             <div className="max-w-4xl mx-auto px-4">
                 <div className="w-1 h-[calc(9rem-1lh)]" />
                 <h1>
@@ -255,10 +255,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
             {profile.birthDate && <BirthdayConfetti birthDate={profile.birthDate.toString()} />}
             
-            <FooterController visible={false}/>
-            <FooterProvider>
-            <Footer/>
-            </FooterProvider>
+            <div className="absolute bottom-0 left-0 right-0">
+                <FooterController visible={false}/>
+                <FooterProvider>
+                <Footer/>
+                </FooterProvider>
+            </div>
         </div>
     )
 }
