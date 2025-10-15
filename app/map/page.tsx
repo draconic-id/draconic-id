@@ -31,7 +31,11 @@ export default async function Page() {
         orderBy: {
             id: 'desc'
         }
-    }).then(profiles => profiles.sort(() => Math.random() - 0.5))
+    }).then(profiles => {
+        const withoutAvatar = profiles.filter(p => !p.avatar);
+        const withAvatar = profiles.filter(p => p.avatar);
+        return [...withoutAvatar.sort(() => Math.random() - 0.5), ...withAvatar.sort(() => Math.random() - 0.5)];
+    })
 
     return (
         <>

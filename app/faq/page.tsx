@@ -18,6 +18,7 @@ export default function Page() {
               <li><a href="#who-is-behind-draconic-id" className="underline">Who is behind Draconic ID?</a></li>
               <li><a href="#what-am-i-allowed-to-put" className="underline">What am I allowed to put on my profile?</a></li>
               <li><a href="#afraid-of-exposing-location" className="underline">I am afraid of exposing my location on the map</a></li>
+              <li><a href="#map-marker-covered" className="underline">My map marker is getting covered up by others</a></li>
               <li><a href="#profile-on-google" className="underline">Will my profile show up on Google?</a></li>
               <li><a href="#profile-used-for-ai" className="underline">Is information on my profile used for AI?</a></li>
               <li><a href="#privacy-policy-terms" className="underline">What are your privacy policy and terms of use like?</a></li>
@@ -52,6 +53,11 @@ export default function Page() {
             <div id="afraid-of-exposing-location" className="scroll-mt-16">
               <h2 className="text-xl font-semibold mb-3">I am afraid of exposing my location on the map.</h2>
               <p className="text-lg leading-relaxed">The map is an iconic feature of Draconic ID. However, how and whether you want to be on the map is totally up to you. The aim is to give you a rough idea of where dragons might be. By no means should you expose your real address. When creating an account and making a profile, you can optionally choose the location of the pin on the map. The coordinates of this pin are the only thing we save about your location. You are free to make the location of this pin as precise or imprecise as you want. Furthermore, you can also choose to have your pin only be shown to dragons who are logged in. To achieve this, you must set your profile's privacy to "Hidden".</p>
+            </div>
+
+            <div id="map-marker-covered" className="scroll-mt-16">
+              <h2 className="text-xl font-semibold mb-3">My map marker is getting covered up by others.</h2>
+              <p className="text-lg leading-relaxed mb-4">When multiple markers are placed close together on the map, some may appear on top of others. This is especially apparent in busy regions like Europe and North America when zoomed out. Which markers get rendered on top is determined randomly each time the data is retrieved. Profiles with an avatar get priority over profiles without an avatar, making them more likely to appear on top when markers overlap. Data might be cached, so refreshing the page does not always change the priority of the markers immediately.</p>
             </div>
 
             <div id="profile-on-google" className="scroll-mt-16">
