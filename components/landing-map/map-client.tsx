@@ -48,8 +48,9 @@ export default function MapClient({ profiles, className, style }: MapClientProps
     const map = mapRef.current?.getMap() as any;
     if (!map) return;
 
-    const STEP_LNG = 120; // degrees per step (westward)
-    const STEP_DURATION = 12000; // ms per step
+    const canvas: HTMLCanvasElement | undefined = map.getCanvas?.();
+    const STEP_LNG = 120;
+    const STEP_DURATION = 12000;
 
     const clearResumeTimeout = () => {
       if (resumeTimeoutRef.current) {
@@ -67,11 +68,11 @@ export default function MapClient({ profiles, className, style }: MapClientProps
     const step = () => {
       if (!spinningRef.current) return;
       const c = map.getCenter();
-      const nextLng = c.lng - STEP_LNG; // spin westward
+      const nextLng = c.lng - STEP_LNG;
       map.easeTo({
         center: [nextLng, c.lat],
         duration: STEP_DURATION,
-        easing: (t: number) => t, // linear
+        easing: (t: number) => t,
         animate: true,
         bearing: 0,
         pitch: 0,
@@ -102,7 +103,8 @@ export default function MapClient({ profiles, className, style }: MapClientProps
 
       clearResumeTimeout();
       resumeTimeoutRef.current = setTimeout(() => {
-        if (!pointerDownRef.current && !draggingRef.current && isIdle()) {
+        const okToStart = !pointerDownRef.current && !draggingRef.current;
+        if (okToStart && isIdle()) {
           idleResumeScheduledRef.current = false;
           start();
           return;
@@ -117,7 +119,8 @@ export default function MapClient({ profiles, className, style }: MapClientProps
     if (map.loaded?.()) start();
     else map.once('load', start);
 
-    const onPointerDown = () => {
+    // --- Map event handlers ---
+    const onPointerDown = (e?: any) => {
       pointerDownRef.current = true;
       stop();
     };
@@ -145,6 +148,57 @@ export default function MapClient({ profiles, className, style }: MapClientProps
     map.on('dragstart', onDragStart);
     map.on('dragend', onDragEnd);
     map.on('wheel', onWheel);
+
+    // --- Pointer capture to keep receiving pointerup even outside canvas ---
+    // Some browsers (esp. Safari) behave better with explicit pointer capture.
+    let capturedPointerId: number | null = null;
+    const onCanvasPointerDown = (ev: PointerEvent) => {
+      try {
+        (ev.target as Element).setPointerCapture(ev.pointerId);
+        capturedPointerId = ev.pointerId;
+      } catch {
+        capturedPointerId = null;
+      }
+    };
+    const onCanvasPointerUp = (ev: PointerEvent) => {
+      if (capturedPointerId !== null) {
+        try {
+          (ev.target as Element).releasePointerCapture(capturedPointerId);
+        } catch { }
+        capturedPointerId = null;
+      }
+    };
+    canvas?.addEventListener('pointerdown', onCanvasPointerDown, { passive: true });
+    canvas?.addEventListener('pointerup', onCanvasPointerUp, { passive: true });
+
+    // --- Global fallbacks (if pointer capture is lost or not supported) ---
+    const onGlobalPointerUp = () => {
+      // If we never saw the local up/dragend, ensure flags are cleared
+      const wasDownOrDragging = pointerDownRef.current || draggingRef.current;
+      pointerDownRef.current = false;
+      draggingRef.current = false;
+      if (wasDownOrDragging) resumeWhenIdle();
+    };
+    window.addEventListener('pointerup', onGlobalPointerUp, true);
+    window.addEventListener('pointercancel', onGlobalPointerUp, true);
+    window.addEventListener('blur', onGlobalPointerUp);
+
+    // --- Cleanup when the map is removed (ReactMap unmounts) ---
+    map.once('remove', () => {
+      clearResumeTimeout();
+      map.off('mousedown', onPointerDown);
+      map.off('touchstart', onPointerDown);
+      map.off('mouseup', onPointerUp);
+      map.off('touchend', onPointerUp);
+      map.off('dragstart', onDragStart);
+      map.off('dragend', onDragEnd);
+      map.off('wheel', onWheel);
+      canvas?.removeEventListener('pointerdown', onCanvasPointerDown);
+      canvas?.removeEventListener('pointerup', onCanvasPointerUp);
+      window.removeEventListener('pointerup', onGlobalPointerUp, true);
+      window.removeEventListener('pointercancel', onGlobalPointerUp, true);
+      window.removeEventListener('blur', onGlobalPointerUp);
+    });
   };
 
   return (
