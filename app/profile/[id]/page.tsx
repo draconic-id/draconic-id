@@ -39,6 +39,7 @@ import { PrismaClient } from '@/prisma/generated';
 import FooterController from '@/components/footer/footer-controller';
 import Footer from '@/components/footer';
 import { FooterProvider } from '@/components/footer/footer-context';
+import { BirthdayConfetti } from '@/components/birthday-confetti';
 
 const prisma = new PrismaClient();
 
@@ -251,6 +252,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 />
                 <div className="w-1 h-16" />
             </div>
+
+            {profile.birthDate && <BirthdayConfetti birthDate={profile.birthDate.toString()} />}
+            
             <FooterController visible={false}/>
             <FooterProvider>
             <Footer/>
