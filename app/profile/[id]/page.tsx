@@ -255,6 +255,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
             {profile.birthDate && <BirthdayConfetti birthDate={profile.birthDate.toString()} />}
             
+            <div className="h-40 w-1"/>
             <div className="absolute bottom-0 left-0 right-0">
                 <FooterController visible={false}/>
                 <FooterProvider>
