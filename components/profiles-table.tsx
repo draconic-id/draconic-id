@@ -128,7 +128,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
               alt="avatar"
               width={40}
               height={40}
-              className="h-10 w-10 rounded-full object-cover"
+              className="h-10 w-10 rounded-full object-cover bg-muted"
             />
           ) : (
             <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center text-xs">
@@ -154,7 +154,14 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
           const bName = (b.original.name || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
           return aName.localeCompare(bName, undefined, { numeric: true, sensitivity: "base" });
         },
-        cell: ({ getValue }) => <div className="font-medium">{(getValue() as string) ?? "—"}</div>,
+        cell: ({ getValue }) => {
+          const name = getValue() as string;
+          return name ? (
+            <div className="font-medium">{name}</div>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          );
+        },
       },
       {
         accessorKey: "tagline",
@@ -193,10 +200,9 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
           const display = formatBirthdayUTC(iso, showYear);
           const days = row.original.daysToBirthday!;
           return (
-            <div className="flex items-center gap-2">
-              <span>{display}</span>
-              <Badge variant="secondary">{days}d</Badge>
-            </div>
+            <span>
+              {display} <Badge variant="secondary">{days}d</Badge>
+            </span>
           );
         },
       },
@@ -205,14 +211,14 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
         header: "Longitude",
         enableSorting: false,
         cell: ({ getValue }) =>
-          getValue() != null ? (getValue() as number).toFixed(5) : "—",
+          getValue() != null ? (getValue() as number).toFixed(5) : <span className="text-muted-foreground">—</span>,
       },
       {
         accessorKey: "latitude",
         header: "Latitude",
         enableSorting: false,
         cell: ({ getValue }) =>
-          getValue() != null ? (getValue() as number).toFixed(5) : "—",
+          getValue() != null ? (getValue() as number).toFixed(5) : <span className="text-muted-foreground">—</span>,
       },
       {
         accessorKey: "color",
@@ -286,7 +292,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
         },
         cell: ({ getValue }) => {
           const v = getValue() as number | null;
-          return v != null ? v.toFixed(1) : "—";
+          return v != null ? v.toFixed(1) : <span className="text-muted-foreground">—</span>;
         },
       });
     }
