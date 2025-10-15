@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 
 import { PrismaClient, Privacy } from '@/prisma/generated';
+import FooterController from '@/components/footer/footer-controller';
 const prisma = new PrismaClient();
 
 export default async function Page() {
@@ -36,6 +37,7 @@ export default async function Page() {
         <>
          <Map profiles={profiles}>
          </Map>
+         <FooterController visible={false}/>
         </>
     )
 }

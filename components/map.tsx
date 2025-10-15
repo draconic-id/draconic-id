@@ -53,7 +53,7 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                 latitude: 51.16382,
                 zoom: 3
             }}
-            style={{ width: '100dvw', height: '100dvh' }}
+            style={{ width: '100dvw', height: '100dvh'}}
 
             projection={'globe'}
 

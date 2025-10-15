@@ -17,11 +17,12 @@ import { auth } from '@/lib/auth';
 
 import ResponsiveScale from "@/components/responsive-scale";
 import { headers } from 'next/headers';
+import FooterController from '@/components/footer/footer-controller';
 
 export default async function Page() {
-      const session = await auth.api.getSession({
-          headers: await headers() // you need to pass the headers object.
-      })
+  const session = await auth.api.getSession({
+    headers: await headers() // you need to pass the headers object.
+  })
   return (
     <>
       <div className="w-1 h-16" />
@@ -62,7 +63,8 @@ export default async function Page() {
               </CreditCardLogo> */}
 
                 {/* Portrait */}
-                <Image alt="Portrait" width={128} height={128} className='absolute top-14 left-2 rounded-lg' src="/saphira.png" />
+                <Image alt="Portrait" width={128} height={128} className='absolute top-14 left-2 rounded-lg' src="/saphira.jpg" />
+                <FooterController attribution={<>&quot;<Link className="underline" href="https://commons.wikimedia.org/wiki/File:Christopher_Paolini,_Eragon_1.jpg" target="_blank">Christopher Paolini, Eragon</Link>&quot; by Verlagsgruppe Random House, adapted by Draconic ID, licensed under <Link className="underline" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</Link>.</>} />
 
                 {/* Primary fields */}
                 <div className="absolute right-2 top-14 grid grid-cols-2 gap-x-0 gap-y-1 text-[11px] leading-4">

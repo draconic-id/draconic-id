@@ -3,6 +3,8 @@ import { Geist, Geist_Mono, Merriweather, Merriweather_Sans } from "next/font/go
 import "./globals.css";
 import Navigation from "@/components/navigation";
 import { Toaster } from "@/components/ui/sonner";
+import Footer from "@/components/footer";
+import { FooterProvider } from "@/components/footer/footer-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,9 +44,12 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
-        <Navigation/>
-        <Toaster position="bottom-center"/>
-        {children}
+        <FooterProvider>
+          <Navigation />
+          <Toaster position="bottom-center" />
+          {children}
+          <Footer />
+        </FooterProvider>
       </body>
     </html >
   );
