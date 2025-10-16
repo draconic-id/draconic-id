@@ -126,8 +126,14 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
         },
       }),
       Youtube.configure({
-        controls: false,
+        controls: true,
         nocookie: true,
+        modestBranding: false,
+        progressBarColor: 'white',
+        
+        HTMLAttributes: {
+          class: 'w-full aspect-video',
+        },
       }),
       TextStyle,
       Color,
