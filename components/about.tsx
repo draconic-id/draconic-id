@@ -130,9 +130,9 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
         nocookie: true,
         modestBranding: false,
         progressBarColor: 'white',
-        
+
         HTMLAttributes: {
-          class: 'w-full aspect-video',
+          class: 'w-full h-auto aspect-video',
         },
       }),
       TextStyle,
