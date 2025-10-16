@@ -53,7 +53,7 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                 latitude: 51.16382,
                 zoom: 3
             }}
-            style={{ width: '100dvw', height: '100dvh'}}
+            style={{ width: '100dvw', height: '100dvh' }}
 
             projection={'globe'}
 
@@ -110,7 +110,7 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                                     />
                                 </AvatarImage>} */}
 
-                                {profile.avatar && <AvatarImage src={`/_next/image?url=${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}&w=48&q=75`}/> }
+                                {profile.avatar && <AvatarImage src={`/_next/image?url=${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}&w=48&q=75`} />}
 
                                 <AvatarFallback>{profile.user.name.charAt(0)}</AvatarFallback>
                             </Avatar>
@@ -124,16 +124,16 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                                 latitude={profile.latitude!}
                                 onClose={() => setPopup('')}
                             >
-                                <div>
-                                    <span className="text-black text-base">
-                                        <span className='text-xl font-bold'>{profile.user.name}</span><br />
+                                <>
+                                    <div className="text-black text-base">
+                                        <p className='text-xl font-bold truncate'>{profile.user.name}</p>
                                         {profile.tagline}<br /><br />
-                                    </span>
+                                    </div>
 
                                     <Button asChild>
                                         <Link href={'/profile/' + profile.id}>View profile</Link>
                                     </Button>
-                                </div>
+                                </>
                             </Popup>
                         )}
                     </div>
