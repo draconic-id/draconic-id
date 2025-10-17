@@ -362,27 +362,6 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
       }
     };
 
-    const onKeyDown = (e: React.KeyboardEvent) => {
-      // Keyboard: Enter/Space also open the menu (accessibility)
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        // approximate center of the row element for positioning
-        const rect = trRef.current?.getBoundingClientRect();
-        const x = rect ? rect.left + rect.width / 2 : 0;
-        const y = rect ? rect.top + rect.height / 2 : 0;
-        openContextAtPoint(x, y);
-      }
-    };
-
-    const onTouchEnd = (e: React.TouchEvent) => {
-      // Tap → open menu at touch location
-      const t = e.changedTouches[0];
-      if (t) {
-        e.preventDefault();
-        openContextAtPoint(t.clientX, t.clientY);
-      }
-    };
-
     return (
       <ContextMenu>
         <ContextMenuTrigger asChild>
@@ -392,8 +371,6 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
             tabIndex={0}
             className={className}
             onClick={onClick}
-            onKeyDown={onKeyDown}
-            onTouchEnd={onTouchEnd}
           >
             {children}
           </tr>
