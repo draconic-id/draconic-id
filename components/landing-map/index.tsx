@@ -95,7 +95,7 @@ export type LandingMapProps = {
 };
 
 export default async function LandingMap({
-  count = 20,
+  count = 30,
   sample = 250,
   requiredId = 'PkKltWOmS3dhUhUR',
   className,
