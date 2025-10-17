@@ -51,12 +51,7 @@ export default async function Navigation() {
                     </NavigationMenuLink>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <NavigationMenuLink asChild>
-                        <Link href="/faq">FAQ</Link>
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <NavigationMenuTrigger className="">{session?.user.name ? session?.user.name : "Account"}</NavigationMenuTrigger>
+                    <NavigationMenuTrigger><span className='max-w-32 truncate'>{session?.user.name ? session?.user.name : "Account"}</span></NavigationMenuTrigger>
                     <NavigationMenuContent>
 
                         {session ?

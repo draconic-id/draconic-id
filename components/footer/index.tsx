@@ -13,8 +13,8 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
           <div>© {new Date().getFullYear()} Draconic ID</div>
           <div className="flex gap-4">
-            <Link href="/Privacy%20Policy.odt" className="underline">Privacy Policy</Link>
-            <Link href="/Terms%20of%20Use.odt" className="underline">Terms of Use</Link>
+            <Link target="_blank" href="https://status.bluefi.re" className="underline">Status</Link>
+            <Link href="/faq" className="underline">FAQ</Link>
             <Link target="_blank" href="https://mailhide.io/e/RPzCeWBk" className="underline">Contact</Link>
           </div>
         </div>
