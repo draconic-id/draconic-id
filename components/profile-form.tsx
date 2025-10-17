@@ -97,7 +97,7 @@ export default function ProfileForm({ action, profile }: ProfileFormProps) {
             <div className="grid gap-4 mt-8 mb-8">
                 <div className="grid gap-3">
                     <Label htmlFor="name">Display Name</Label>
-                    <Input id="name" name="name" defaultValue={profile.user.name} placeholder="Bluefire" />
+                    <Input id="name" name="name" maxLength={64} defaultValue={profile.user.name} placeholder="Bluefire" />
                 </div>
                 <div className="grid gap-3">
                     <Label htmlFor="tagline">Tagline</Label>

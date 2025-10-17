@@ -19,6 +19,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  ContextMenu,
+  ContextMenuTrigger,
+  ContextMenuContent,
+  ContextMenuItem,
+} from "@/components/ui/context-menu";
 
 type RawRow = {
   id: string; // profile id
@@ -46,6 +52,7 @@ type Props = {
   data: RawRow[];
   viewerCoords: { longitude: number; latitude: number } | null;
 };
+
 
 // --- UTC-safe utils ---
 function dateFromUTCDateOnly(iso: string) {
@@ -100,11 +107,11 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
       const distanceKm =
         viewerCoords && row.latitude != null && row.longitude != null
           ? haversineKm(
-              viewerCoords.latitude,
-              viewerCoords.longitude,
-              row.latitude,
-              row.longitude
-            )
+            viewerCoords.latitude,
+            viewerCoords.longitude,
+            row.latitude,
+            row.longitude
+          )
           : null;
       const daysToBirthday = row.birthDate ? daysUntilNextBirthdayUTC(row.birthDate) : null;
       return { ...row, distanceKm, daysToBirthday };
@@ -157,7 +164,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
         cell: ({ getValue }) => {
           const name = getValue() as string;
           return name ? (
-            <div className="font-medium">{name}</div>
+            <div className="font-medium w-32 break-words overflow-hidden text-ellipsis line-clamp-3">{name}</div>
           ) : (
             <span className="text-muted-foreground">—</span>
           );
@@ -281,7 +288,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             className="px-1"
           >
-            Distance (km)
+            Distance
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         ),
@@ -292,7 +299,7 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
         },
         cell: ({ getValue }) => {
           const v = getValue() as number | null;
-          return v != null ? v.toFixed(1) : <span className="text-muted-foreground">—</span>;
+          return v != null ? `${v.toFixed(1)} km` : <span className="text-muted-foreground">—</span>;
         },
       });
     }
@@ -319,6 +326,98 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
   const headerGroups = table.getHeaderGroups();
   const rowModel = table.getRowModel();
   const totalShown = rowModel.rows.length;
+
+  function RowWithMenu({
+    row,
+    className,
+    children,
+    onShowProfile,
+    onShowMap,
+  }: {
+    row: typeof rowModel.rows[number];
+    className?: string;
+    children: React.ReactNode;
+    onShowProfile: (id: string) => void;
+    onShowMap: (id: string) => void;
+  }) {
+    const trRef = React.useRef<HTMLTableRowElement | null>(null);
+    const id = row.original.id;
+
+    const openContextAtPoint = (clientX: number, clientY: number) => {
+      // Fire a synthetic contextmenu event at the cursor to let Radix position the menu
+      trRef.current?.dispatchEvent(
+        new MouseEvent("contextmenu", {
+          bubbles: true,
+          clientX,
+          clientY,
+        })
+      );
+    };
+
+    const onClick = (e: React.MouseEvent) => {
+      // Left click → open menu at cursor
+      if (e.button === 0) {
+        e.preventDefault();
+        openContextAtPoint(e.clientX, e.clientY);
+      }
+    };
+
+    const onKeyDown = (e: React.KeyboardEvent) => {
+      // Keyboard: Enter/Space also open the menu (accessibility)
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        // approximate center of the row element for positioning
+        const rect = trRef.current?.getBoundingClientRect();
+        const x = rect ? rect.left + rect.width / 2 : 0;
+        const y = rect ? rect.top + rect.height / 2 : 0;
+        openContextAtPoint(x, y);
+      }
+    };
+
+    const onTouchEnd = (e: React.TouchEvent) => {
+      // Tap → open menu at touch location
+      const t = e.changedTouches[0];
+      if (t) {
+        e.preventDefault();
+        openContextAtPoint(t.clientX, t.clientY);
+      }
+    };
+
+    return (
+      <ContextMenu>
+        <ContextMenuTrigger asChild>
+          <tr
+            ref={trRef}
+            role="button"
+            tabIndex={0}
+            className={className}
+            onClick={onClick}
+            onKeyDown={onKeyDown}
+            onTouchEnd={onTouchEnd}
+          >
+            {children}
+          </tr>
+        </ContextMenuTrigger>
+
+        <ContextMenuContent>
+          <ContextMenuItem onSelect={() => onShowProfile(id)}>
+            Show profile
+          </ContextMenuItem>
+          <ContextMenuItem onSelect={() => onShowMap(id)}>
+            Show on map
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
+    );
+  }
+
+  const showProfile = useCallback((id: string) => {
+    router.push(`/profile/${id}`);
+  }, [router]);
+
+  const showOnMap = useCallback((id: string) => {
+    router.push(`/map?profile=${id}`);
+  }, [router]);
 
   return (
     <div className="space-y-4">
@@ -353,18 +452,21 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
           </thead>
           <tbody>
             {rowModel.rows.map((row) => (
-              <tr
+              <RowWithMenu
                 key={row.id}
+                row={row}
                 className={cn("border-b hover:bg-muted/40 cursor-pointer")}
-                onClick={() => router.push(`/profile/${row.original.id}`)}
+                onShowProfile={showProfile}
+                onShowMap={showOnMap}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="p-3 align-middle">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
-              </tr>
+              </RowWithMenu>
             ))}
+
             {rowModel.rows.length === 0 && (
               <tr>
                 <td colSpan={columns.length} className="p-6 text-center text-muted-foreground">

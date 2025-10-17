@@ -79,7 +79,7 @@ function getLinkIcon(url?: string): IconType {
   if (host.includes('boosty.to')) return SiBoosty;
   if (host.includes('soundcloud.com')) return SiSoundcloud;
   if (host.includes('whatsapp.com')) return SiWhatsapp;
-  if (host.includes('signal.org')) return SiSignal;
+  if (host.includes('signal.me')) return SiSignal;
   if (host.includes('tumblr.com')) return SiTumblr;
   if (host.includes('artstation.com')) return SiArtstation;
   if (host.includes('twitch.tv')) return SiTwitch;
@@ -198,11 +198,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                         <AvatarImage src={profile.avatar ? `${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}` : undefined} />
                         <AvatarFallback>{profile.user.name.charAt(0)}</AvatarFallback>
                     </Avatar>
-                    <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <p>{profile.user.name}</p>
+                    <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                            <p className="truncate">{profile.user.name}</p>
                             {profile.birthDate && (
-                                <span className="text-muted-foreground text-sm flex items-center gap-1">
+                                <span className="text-muted-foreground text-sm flex items-center gap-1 flex-shrink-0">
                                     {profile.showAge ? (
                                         <>
                                             <Egg className="w-4 h-4" />

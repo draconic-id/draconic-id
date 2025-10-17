@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 // import Map, { GeolocateControl, NavigationControl, FullscreenControl, ScaleControl, Source, Layer, Marker, Popup } from 'react-map-gl/maplibre'; // Maplibre
 
 import { Prisma } from '@/prisma/generated';
+import { useSearchParams } from 'next/navigation';
 
 type ProfileWithUser = Prisma.ProfileGetPayload<{
     include: { user: true }
@@ -45,6 +46,8 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
         return () => mq.removeEventListener('change', apply);
     }, []);
 
+    const query = useSearchParams().get('profile');
+
     return (
         <ReactMap
             ref={mapRef}
@@ -69,6 +72,16 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
             onLoad={() => {
                 const map = mapRef.current?.getMap?.();
                 if (map) map.setConfigProperty('basemap', 'lightPreset', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'day');
+                if (query) {
+                    setPopup(query);
+                    const profile = validProfiles.find(p => p.id === query);
+                    if (profile) {
+                        mapRef.current?.flyTo({
+                            center: [profile.longitude!, profile.latitude!],
+                            zoom: 10
+                        });
+                    }
+                }
             }}
         >
 
@@ -95,20 +108,8 @@ export default function Map({ profiles }: { profiles: ProfileWithUser[] }) {
                                 setPopup(profile.id);
                             }}
                         >
-                            {/* <div className='rounded-full h-12 w-12 bg-background/50 backdrop-blur-md flex justify-center items-center'>
-                            {profile.avatar ? <Image className="rounded-full" fill={true} objectFit='cover' src={profile.avatar} alt=''/> : <Image src="/dragon.svg" width='24' height='24' alt='' className='filter brightness-0 invert'/>}
-                            </div> */}
 
                             <Avatar className="h-12 w-12 border-2 bg-slate-800 cursor-pointer">
-                                {/* {profile.avatar && <AvatarImage src={`${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}`} asChild={true}>
-                                    <Image
-                                        src={`${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}`}
-                                        alt={profile.user.name}
-                                        width={48}
-                                        height={48}
-                                        className="rounded-full object-cover"
-                                    />
-                                </AvatarImage>} */}
 
                                 {profile.avatar && <AvatarImage src={`/_next/image?url=${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}/${process.env.NEXT_PUBLIC_MINIO_BUCKET}/avatars/${profile.avatar}&w=48&q=75`} />}
 
