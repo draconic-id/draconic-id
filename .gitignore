@@ -250,3 +250,6 @@ $RECYCLE.BIN/
 /prisma/migrations
 
 # End of https://www.toptal.com/developers/gitignore/api/nextjs,node,windows,macos,linux
+
+# Amazon Q
+/.amazonq/
