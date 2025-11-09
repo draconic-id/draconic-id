@@ -69,6 +69,42 @@ The API provides access to user profiles. All endpoints support field selection 
 - `UNLISTED`
 - `HIDDEN` (only if authenticated)
 
+The `showAge` boolean tells you whether the birthday will be returned with (true) or without (false) a year of birth if a birthdate has been given.
+
+Responses are returned in JSON.
+
+```json
+{
+  "id": "PkKltWOmS3dhUhUR",
+  "tagline": "Owner of Draconic ID. A western dragon with black scales and blue eyes.",
+  "avatar": "https://minio.bluefi.re/draconic-id/avatars/90e7847d-954c-4f58-a423-1ff574566e38",
+  "background": null,
+  "about": "<h1 style=\"text-align: center;\">Welcome to my Draconic ID profile!</h1><p style=\"text-align: center;\"><img src=\"https://i.ibb.co/2YncrwB9/ZQ7A85f.jpg\" style=\"max-width: 100%; height: auto; display: inline-block; margin: 0px; width: 100%;\"></p><blockquote><p style=\"text-align: center;\">\"Laat niets en niemand het vuur in jouw drakenhart ooit doven.\"</p></blockquote>",
+  "color": "#060c33",
+  "privacy": "PUBLIC",
+  "longitude": 5.918231,
+  "latitude": 50.916628,
+  "links": [
+    {
+      "url": "https://bluefi.re",
+      "name": "Website"
+    }
+  ],
+  "createdAt": "2025-09-27T11:57:26.228Z",
+  "updatedAt": "2025-11-07T20:17:32.898Z",
+  "showAge": false,
+  "birthDate": "05-18",
+  "user": {
+    "id": "wkuj1b76eL9IsL81xw0b738P6FTYXxyY",
+    "name": "Bluefire",
+    "createdAt": "2025-09-27T11:57:19.993Z",
+    "updatedAt": "2025-11-08T23:12:38.440Z"
+  }
+}
+```
+
+You can try an [example request](https://draconic.id/api/profile/by-id?id=PkKltWOmS3dhUhUR) as well.
+
 ### /api/profile/all
 
 Retrieve all accessible profiles.
