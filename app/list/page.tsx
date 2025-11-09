@@ -76,7 +76,7 @@ export default async function Page() {
                     <p className="text-lg">{`This directory lists all dragons that have made their profile visible. Search for names,${session ? " see who's nearby," : ""} check upcoming birthdays and more. You can also query profile information programatically using our APIs. More information about this will be available soon.`}</p>
                 </div>
             </div>
-            <div className="p-6 max-w-7xl py-20 ml-auto mr-auto">
+            <div className="p-6 max-w-7xl ml-auto mr-auto">
                 <ProfilesTable data={rows} viewerCoords={viewerCoords} />
             </div>
         </>
