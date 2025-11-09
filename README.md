@@ -9,6 +9,7 @@ Draconic ID is available at [https://draconic.id](https://draconic.id).
 ## 📄 Licensing
 
 This project is open-source, and will soon be freely licensed. Such a license will be added at a future date. The properties of this license will be:
+
 - You may fork the project.
 - Forks must stay open-source.
 - When forking, give credit to the original project.
@@ -59,6 +60,80 @@ The following environment variables can be configured:
 - `TRAEFIK_TLS_ENABLED` - Enable TLS/SSL (e.g., `true`)
 - `TRAEFIK_CERT_RESOLVER` - Certificate resolver name (e.g., `lets-encrypt`)
 - `TRAEFIK_SERVICE_PORT` - Service port for load balancer (e.g., `3000`)
+
+## 🔌 API Endpoints
+
+The API provides access to user profiles. All endpoints support field selection via the `fields` query parameter. Only profiles with the following privacy settings can be retrieved with the API:
+
+- `PUBLIC`
+- `UNLISTED`
+- `HIDDEN` (only if authenticated)
+
+### /api/profile/all
+
+Retrieve all accessible profiles.
+
+```bash
+# Get all profiles
+curl "https://draconic.id/api/profile/all"
+
+# Get specific fields only
+curl "https://draconic.id/api/profile/all?fields=id,tagline,avatar"
+```
+
+### /api/profile/by-id
+
+Retrieve profiles by profile ID(s). The profile ID is visible in the URL when visiting someone's profile on Draconic ID.
+
+```bash
+# Single profile
+curl "https://draconic.id/api/profile/by-id?id=profile123"
+
+# Multiple profiles
+curl "https://draconic.id/api/profile/by-id?ids=profile123,profile456"
+```
+
+```bash
+# POST for bulk retrieval
+curl -X POST "https://draconic.id/api/profile/by-id" \
+  -H "Content-Type: application/json" \
+  -d '{"ids": ["profile123", "profile456"]}'
+```
+
+### /api/profile/by-account
+
+Retrieve profiles by account ID(s). You will want to use this option if you have an application that makes use of the same identity provider and wants to fetch the Draconic ID profile for that uses. The provider value can be assumed to be `draconic-id` in most cases.
+
+```bash
+# Get profile by account
+curl "https://draconic.id/api/profile/by-account?id=123&provider=draconic-id"
+```
+
+```bash
+# POST for multiple accounts
+curl -X POST "https://draconic.id/api/profile/by-account" \
+  -H "Content-Type: application/json" \
+  -d '{"accounts": [{"accountId": "account123", "providerId": "draconic-id"}]}'
+```
+
+### /api/profile/by-user
+
+Retrieve profiles by user ID(s).
+
+```bash
+# Single user
+curl "https://draconic.id/api/profile/by-user?userId=user123"
+
+# Multiple users
+curl "https://draconic.id/api/profile/by-user?userIds=user123,user456"
+```
+
+```bash
+# POST for bulk retrieval
+curl -X POST "https://draconic.id/api/profile/by-user" \
+  -H "Content-Type: application/json" \
+  -d '{"userIds": ["user123", "user456"]}'
+```
 
 ## 🙏 Acknowledgments
 

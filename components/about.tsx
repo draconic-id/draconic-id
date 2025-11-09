@@ -1,8 +1,8 @@
 'use client';
-
+import { useEffect } from "react";
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { PencilLine, Bold, Italic, Strikethrough, Underline, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Type, Link2, Image as ImageIcon, Code, Quote, AlignLeft, AlignCenter, AlignRight, AlignJustify, Superscript, Subscript, List, ListOrdered, ListChecks, Minus, ChevronDown, Play, Palette } from 'lucide-react';
+import { PencilLine, Bold, Italic, Strikethrough, Underline, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, Type, Link2, Image as ImageIcon, Code, Quote, AlignLeft, AlignCenter, AlignRight, AlignJustify, Superscript, Subscript, List, ListOrdered, ListChecks, Minus, ChevronDown, Play, Palette, ChevronRight } from 'lucide-react';
 
 import { Separator } from './ui/separator';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
@@ -13,6 +13,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import { Placeholder } from '@tiptap/extensions'
 import TextAlign from '@tiptap/extension-text-align';
 import SuperscriptExt from '@tiptap/extension-superscript';
 import SubscriptExt from '@tiptap/extension-subscript';
@@ -22,6 +23,7 @@ import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 import Youtube from '@tiptap/extension-youtube';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
+import { Details, DetailsContent, DetailsSummary } from '@tiptap/extension-details';
 import { toast } from 'sonner';
 
 // --- Custom Image extension that persists a `width` attribute and renders it into inline style ---
@@ -113,6 +115,24 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
       SuperscriptExt,
       SubscriptExt,
       LinkExt.configure({ openOnClick: false }),
+      Details.configure({
+        persist: false,
+        HTMLAttributes: {
+          class: 'details',
+        },
+      }),
+      DetailsSummary,
+      DetailsContent,
+      Placeholder.configure({
+        includeChildren: true,
+        placeholder: ({ node }) => {
+          if (node.type.name === 'detailsSummary') {
+            return 'Summary'
+          }
+
+          return ''
+        },
+      }),
       // Use the custom image extension; no static HTMLAttributes here because we render them via `renderHTML` above
       CustomImage.configure({
         inline: true,
@@ -193,6 +213,41 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
     toast.success("Your about information was updated successfully.");
   };
 
+//   useEffect(() => {
+//   if (!editor) return;
+
+//   const dom = editor.view.dom as HTMLElement;
+
+//   const onClick = (e: MouseEvent) => {
+//     const target = e.target as HTMLElement | null;
+//     if (!target) return;
+
+//     // Only toggle when clicking a <summary> inside TipTap details
+//     const summary = target.closest("summary");
+//     if (!summary) return;
+
+//     // Let normal interactions pass through
+//     if (target.closest("a,button,input,textarea")) return;
+
+//     // If user is selecting text, don't toggle
+//     const sel = window.getSelection();
+//     if (sel && (sel.type === "Range" || sel.toString().length)) return;
+
+//     // (Optional) Only make summary clickable when the editor is read-only:
+//     // if (editor.isEditable) return;
+
+//     const root = summary.closest("[data-type='details']");
+//     const toggleBtn = root?.querySelector(":scope > button") as HTMLButtonElement | null;
+//     if (!toggleBtn) return;
+
+//     e.preventDefault();
+//     toggleBtn.click();
+//   };
+
+//   dom.addEventListener("click", onClick);
+//   return () => dom.removeEventListener("click", onClick);
+// }, [editor]);
+
   return (
     <>
       <h1>
@@ -236,91 +291,91 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                     </TooltipTrigger>
                     <TooltipContent>Strikethrough</TooltipContent>
                   </Tooltip>
-                <Separator orientation="vertical" className="h-8" />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm" className={editor.isActive('heading') ? 'bg-accent' : ''}>
-                      <Heading1 className="h-4 w-4" />
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setParagraph().run()}>
-                      <Type className="h-4 w-4 mr-2" />
-                      Normal
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}>
-                      <Heading1 className="h-4 w-4 mr-2" />
-                      Heading 1
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}>
-                      <Heading2 className="h-4 w-4 mr-2" />
-                      Heading 2
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 3 }).run()}>
-                      <Heading3 className="h-4 w-4 mr-2" />
-                      Heading 3
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 4 }).run()}>
-                      <Heading4 className="h-4 w-4 mr-2" />
-                      Heading 4
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 5 }).run()}>
-                      <Heading5 className="h-4 w-4 mr-2" />
-                      Heading 5
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 6 }).run()}>
-                      <Heading6 className="h-4 w-4 mr-2" />
-                      Heading 6
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <Separator orientation="vertical" className="h-8" />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm">
-                      <Link2 className="h-4 w-4" />
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setLinkDialog(true)}>
-                      <Link2 className="h-4 w-4 mr-2" />
-                      Link
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setImageDialog(true)}>
-                      <ImageIcon className="h-4 w-4 mr-2" />
-                      Image
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setYoutubeDialog(true)}>
-                      <Play className="h-4 w-4 mr-2" />
-                      YouTube
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <Separator orientation="vertical" className="h-8" />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm" className={editor.isActive('bulletList') || editor.isActive('orderedList') || editor.isActive('taskList') ? 'bg-accent' : ''}>
-                      <List className="h-4 w-4" />
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
-                      <List className="h-4 w-4 mr-2" />
-                      Bullet List
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-                      <ListOrdered className="h-4 w-4 mr-2" />
-                      Numbered List
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
-                      <ListChecks className="h-4 w-4 mr-2" />
-                      Task List
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  <Separator orientation="vertical" className="h-8" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" className={editor.isActive('heading') ? 'bg-accent' : ''}>
+                        <Heading1 className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setParagraph().run()}>
+                        <Type className="h-4 w-4 mr-2" />
+                        Normal
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 1 }).run()}>
+                        <Heading1 className="h-4 w-4 mr-2" />
+                        Heading 1
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 2 }).run()}>
+                        <Heading2 className="h-4 w-4 mr-2" />
+                        Heading 2
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 3 }).run()}>
+                        <Heading3 className="h-4 w-4 mr-2" />
+                        Heading 3
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 4 }).run()}>
+                        <Heading4 className="h-4 w-4 mr-2" />
+                        Heading 4
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 5 }).run()}>
+                        <Heading5 className="h-4 w-4 mr-2" />
+                        Heading 5
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setHeading({ level: 6 }).run()}>
+                        <Heading6 className="h-4 w-4 mr-2" />
+                        Heading 6
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Separator orientation="vertical" className="h-8" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm">
+                        <Link2 className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => setLinkDialog(true)}>
+                        <Link2 className="h-4 w-4 mr-2" />
+                        Link
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setImageDialog(true)}>
+                        <ImageIcon className="h-4 w-4 mr-2" />
+                        Image
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setYoutubeDialog(true)}>
+                        <Play className="h-4 w-4 mr-2" />
+                        YouTube
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Separator orientation="vertical" className="h-8" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" className={editor.isActive('bulletList') || editor.isActive('orderedList') || editor.isActive('taskList') ? 'bg-accent' : ''}>
+                        <List className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().toggleBulletList().run()}>
+                        <List className="h-4 w-4 mr-2" />
+                        Bullet List
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+                        <ListOrdered className="h-4 w-4 mr-2" />
+                        Numbered List
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().toggleTaskList().run()}>
+                        <ListChecks className="h-4 w-4 mr-2" />
+                        Task List
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={editor.isActive('blockquote') ? 'bg-accent' : ''}>
@@ -337,35 +392,35 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                     </TooltipTrigger>
                     <TooltipContent>Code Block</TooltipContent>
                   </Tooltip>
-                <Separator orientation="vertical" className="h-8" />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm">
-                      <AlignLeft className="h-4 w-4" />
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-                      <AlignLeft className="h-4 w-4 mr-2" />
-                      Left
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('center').run()}>
-                      <AlignCenter className="h-4 w-4 mr-2" />
-                      Center
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('right').run()}>
-                      <AlignRight className="h-4 w-4 mr-2" />
-                      Right
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('justify').run()}>
-                      <AlignJustify className="h-4 w-4 mr-2" />
-                      Justify
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  <Separator orientation="vertical" className="h-8" />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm">
+                        <AlignLeft className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('left').run()}>
+                        <AlignLeft className="h-4 w-4 mr-2" />
+                        Left
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('center').run()}>
+                        <AlignCenter className="h-4 w-4 mr-2" />
+                        Center
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('right').run()}>
+                        <AlignRight className="h-4 w-4 mr-2" />
+                        Right
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setTextAlign('justify').run()}>
+                        <AlignJustify className="h-4 w-4 mr-2" />
+                        Justify
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
 
-                <Separator orientation="vertical" className="h-8" />
+                  <Separator orientation="vertical" className="h-8" />
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().toggleSuperscript().run()} className={editor.isActive('superscript') ? 'bg-accent' : ''}>
@@ -391,40 +446,48 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
                     </TooltipTrigger>
                     <TooltipContent>Horizontal Rule</TooltipContent>
                   </Tooltip>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button type="button" variant="ghost" size="sm">
-                      <Palette className="h-4 w-4" />
-                      <ChevronDown className="h-3 w-3" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().unsetColor().run()}>
-                      <div className="w-4 h-4 mr-2 border border-border rounded" />
-                      Default
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#ef4444').run()}>
-                      <div className="w-4 h-4 mr-2 bg-red-500 rounded" />
-                      Red
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#3b82f6').run()}>
-                      <div className="w-4 h-4 mr-2 bg-blue-500 rounded" />
-                      Blue
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#22c55e').run()}>
-                      <div className="w-4 h-4 mr-2 bg-green-500 rounded" />
-                      Green
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#f59e0b').run()}>
-                      <div className="w-4 h-4 mr-2 bg-yellow-500 rounded" />
-                      Yellow
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#8b5cf6').run()}>
-                      <div className="w-4 h-4 mr-2 bg-purple-500 rounded" />
-                      Purple
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => editor.chain().focus().setDetails().run()} className={editor.isActive('details') ? 'bg-accent' : ''}>
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Details</TooltipContent>
+                  </Tooltip>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button type="button" variant="ghost" size="sm">
+                        <Palette className="h-4 w-4" />
+                        <ChevronDown className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().unsetColor().run()}>
+                        <div className="w-4 h-4 mr-2 border border-border rounded" />
+                        Default
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#ef4444').run()}>
+                        <div className="w-4 h-4 mr-2 bg-red-500 rounded" />
+                        Red
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#3b82f6').run()}>
+                        <div className="w-4 h-4 mr-2 bg-blue-500 rounded" />
+                        Blue
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#22c55e').run()}>
+                        <div className="w-4 h-4 mr-2 bg-green-500 rounded" />
+                        Green
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#f59e0b').run()}>
+                        <div className="w-4 h-4 mr-2 bg-yellow-500 rounded" />
+                        Yellow
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => editor.chain().focus().setColor('#8b5cf6').run()}>
+                        <div className="w-4 h-4 mr-2 bg-purple-500 rounded" />
+                        Purple
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TooltipProvider>
               </div>
             </div>
@@ -438,7 +501,7 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
           <EditorContent
             editor={editor}
             style={{ ...(textColor && { color: textColor, '--foreground': textColor }), ...(textColorMuted && { '--muted-foreground': textColorMuted }) } as React.CSSProperties}
-            className="prose-sm max-w-none
+            className={`prose-sm max-w-none
               [&>div]:outline-none
               [&>div>h1]:text-2xl [&>div>h1]:font-bold [&>div>h1]:mb-4 [&>div>h1]:mt-0
               [&>div>h2]:text-xl [&>div>h2]:font-semibold [&>div>h2]:mb-3 [&>div>h2]:mt-6
@@ -471,7 +534,36 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
               [&>div>sup]:text-xs [&>div>sup]:align-super
               [&>div>sub]:text-xs [&>div>sub]:align-sub
               [&>div>*:last-child]:mb-0
-              [&>div>*:first-child]:mt-0"
+              [&>div>*:first-child]:mt-0
+
+              [&_[data-type='details']]:flex
+              [&_[data-type='details']]:items-start
+              [&_[data-type='details']]:gap-2
+              
+
+              [&_[data-type='details']>button]:w-4
+              [&_[data-type='details']>button]:h-4
+              [&_[data-type='details']>button]:mt-[3px]
+              [&_[data-type='details']>button]:flex-shrink-0
+              [&_[data-type='details']>button]:rounded
+              [&_[data-type='details']>button]:inline-flex
+              [&_[data-type='details']>button]:items-center
+              [&_[data-type='details']>button]:justify-center
+              [&_[data-type='details']>button]:bg-transparent
+              
+              [&_[data-type='details']>button::before]:content-['⯈']
+              [&_[data-type='details']>button::before]:text-base
+              [&_[data-type='details'].is-open>button::before]:content-['⯆']
+              [&_[data-type='details'][data-open='true']>button::before]:content-['⯆']
+              [&_[data-type='details']_summary]:list-none
+              [&_[data-type='details']_summary]:inline
+              [&_[data-type='details']_[data-type='detailsContent'][hidden]]:hidden
+
+              [&_[data-type='details']>div>summary]:select-none
+              [&_[data-type='details']>div>summary]:px-0
+              [&_[data-type='details']>div>summary]:py-0
+
+              ${!isFormVisible ? '[&>div>p:last-child:has(br.ProseMirror-trailingBreak)]:-mb-10' : ''}`}
           />
         )}
 

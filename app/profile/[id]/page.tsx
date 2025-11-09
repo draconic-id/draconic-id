@@ -24,7 +24,7 @@ import {
 
 import ProfileForm from '@/components/profile-form';
 
-import { PencilLine, ExternalLink, Mail, Cake, Egg } from 'lucide-react';
+import { PencilLine, ExternalLink, Mail, Phone, MessageSquare, Cake, Egg } from 'lucide-react';
 import { differenceInYears, format } from 'date-fns';
 import {
     SiTelegram, SiFuraffinity, SiX, SiMastodon, SiBluesky, SiMatrix, SiDiscord, SiDeviantart, SiTiktok, SiYoutube,
@@ -43,69 +43,132 @@ import { BirthdayConfetti } from '@/components/birthday-confetti';
 
 const prisma = new PrismaClient();
 
-function getLinkIcon(url?: string): IconType {
-  if (!url) return ExternalLink;
+type MastodonPeersCache = {
+    data: string[];
+    timestamp: number;
+    pending?: Promise<string[]>;
+} | null;
 
-  let host = '';
-  try {
-    host = new URL(url).hostname.toLowerCase();
-  } catch {
+let mastodonPeersCache: MastodonPeersCache;
+
+export async function getMastodonPeers(): Promise<string[]> {
+    const now = Date.now();
+    const day = 24 * 60 * 60 * 1000;
+
+    if (!mastodonPeersCache) {
+        mastodonPeersCache = { data: [], timestamp: 0 };
+    }
+
+    if (mastodonPeersCache.pending) return mastodonPeersCache.pending;
+
+    // if we have stale data, return it and fetch in background
+    if (mastodonPeersCache.data.length > 0 && now - mastodonPeersCache.timestamp >= day) {
+        // fetch in background without awaiting
+        mastodonPeersCache.pending = (async () => {
+            try {
+                const res = await fetch('https://mastodon.social/api/v1/instance/peers', {
+                    cache: 'no-store',
+                    signal: AbortSignal.timeout(10000),
+                    headers: { accept: 'application/json' },
+                });
+
+                if (res.ok) {
+                    const peers = (await res.json()) as string[];
+                    mastodonPeersCache = {
+                        data: peers,
+                        timestamp: Date.now(),
+                    };
+                    return peers;
+                }
+            } catch {}
+            return mastodonPeersCache!.data;
+        })().finally(() => {
+            if (mastodonPeersCache) delete mastodonPeersCache.pending;
+        });
+        
+        return mastodonPeersCache.data; // return stale data immediately
+    }
+
+    // if we have fresh data, return it
+    if (mastodonPeersCache.data.length > 0) {
+        return mastodonPeersCache.data;
+    }
+
+    // no data yet, use defaults and fetch in background
+    const defaults = ['mastodon.social', 'mastodon.online', 'dragon.style', 'dragonchat.org'];
+    mastodonPeersCache.data = defaults;
+    mastodonPeersCache.timestamp = 0; // mark as stale to trigger background fetch
+    
+    return defaults;
+}
+
+async function getLinkIcon(url?: string): Promise<IconType> {
+    if (!url) return ExternalLink;
+
+    let host = '';
+    try {
+        host = new URL(url).hostname.toLowerCase();
+    } catch {
+        return ExternalLink;
+    }
+
+    if (host.endsWith('t.me') || host.endsWith('telegram.me')) return SiTelegram;
+    if (host.includes('furaffinity.net')) return SiFuraffinity;
+    if (host.includes('twitter.com') || host.includes('x.com')) return SiX;
+
+    const mastodonPeers = await getMastodonPeers();
+    if (mastodonPeers.includes(host) || host.includes('mastodon.social') || host.includes('mastodon.online') || host.includes('dragonchat.org') || host.includes('dragon.style')) return SiMastodon;
+    if (host.includes('bsky.app')) return SiBluesky;
+    if (host.includes('matrix.to') || host.includes('matrix.org')) return SiMatrix;
+    if (host.includes('discord.gg') || host.includes('discord.com')) return SiDiscord;
+    if (host.includes('deviantart.com')) return SiDeviantart;
+    if (host.includes('tiktok.com')) return SiTiktok;
+    if (host.includes('youtube.com') || host.includes('youtu.be')) return SiYoutube;
+    if (host.includes('geocaching.com')) return SiGeocaching;
+    if (host.includes('carrd.co')) return SiCarrd;
+    if (host.includes('github.com')) return SiGithub;
+    if (host.includes('gitlab.com')) return SiGitlab;
+    if (host.includes('spotify.com')) return SiSpotify;
+    if (host.includes('playstation.com')) return SiPlaystation;
+    if (host.includes('steampowered.com') || host.includes('steamcommunity.com')) return SiSteam;
+    if (host.includes('ea.com') || host.includes('origin.com')) return SiEa;
+    if (host.includes('facebook.com')) return SiFacebook;
+    if (host.includes('ubisoft.com') || host.includes('uplay.com')) return SiUbisoft;
+    if (host.includes('itch.io')) return SiItchdotio;
+    if (host.includes('patreon.com')) return SiPatreon;
+    if (host.includes('buymeacoffee.com')) return SiBuymeacoffee;
+    if (host.includes('boosty.to')) return SiBoosty;
+    if (host.includes('soundcloud.com')) return SiSoundcloud;
+    if (host.includes('whatsapp.com')) return SiWhatsapp;
+    if (host.includes('signal.me')) return SiSignal;
+    if (host.includes('tumblr.com')) return SiTumblr;
+    if (host.includes('artstation.com')) return SiArtstation;
+    if (host.includes('twitch.tv')) return SiTwitch;
+    if (host.includes('bandcamp.com')) return SiBandcamp;
+    if (host.includes('battle.net') || host.includes('blizzard.com')) return SiBattledotnet;
+    if (host.includes('paypal.com')) return SiPaypal;
+    if (host.includes('mihoyo.com') || host.includes('hoyoverse.com')) return SiMihoyo;
+    if (host.includes('sketchfab.com')) return SiSketchfab;
+    if (host.includes('epicgames.com')) return SiEpicgames;
+    if (host.includes('rockstargames.com')) return SiRockstargames;
+    if (host.includes('roblox.com')) return SiRoblox;
+    if (host.includes('kickstarter.com')) return SiKickstarter;
+    if (host.includes('instagram.com')) return SiInstagram;
+    if (host.includes('reddit.com')) return SiReddit;
+    if (host.includes('threads.net')) return SiThreads;
+    if (host.includes('snapchat.com')) return SiSnapchat;
+    if (host.includes('pinterest.com')) return SiPinterest;
+    if (host.includes('gog.com')) return SiGogdotcom;
+    if (host.includes('figma.com')) return SiFigma;
+    if (host.includes('vrchat.com')) return SiVrchat;
+    if (host.includes('medium.com')) return SiMedium;
+    if (host.includes('etsy.com')) return SiEtsy;
+    if (host.includes('nintendo.com') || host.includes('nintendo.net')) return SiNintendo;
+    if (host.includes('mailhide.io') || url.toLowerCase().startsWith('mailto:')) return Mail;
+    if (url.toLowerCase().startsWith('tel:')) return Phone;
+    if (url.toLowerCase().startsWith('sms:')) return MessageSquare;
+
     return ExternalLink;
-  }
-
-  if (host.endsWith('t.me') || host.endsWith('telegram.me')) return SiTelegram;
-  if (host.includes('furaffinity.net')) return SiFuraffinity;
-  if (host.includes('twitter.com') || host.includes('x.com')) return SiX;
-  if (host.includes('mastodon.social') || host.includes('mastodon.online') || host.includes('dragonchat.org') || host.includes('dragon.style')) return SiMastodon;
-  if (host.includes('bsky.app')) return SiBluesky;
-  if (host.includes('matrix.to') || host.includes('matrix.org')) return SiMatrix;
-  if (host.includes('discord.gg') || host.includes('discord.com')) return SiDiscord;
-  if (host.includes('deviantart.com')) return SiDeviantart;
-  if (host.includes('tiktok.com')) return SiTiktok;
-  if (host.includes('youtube.com') || host.includes('youtu.be')) return SiYoutube;
-  if (host.includes('geocaching.com')) return SiGeocaching;
-  if (host.includes('carrd.co')) return SiCarrd;
-  if (host.includes('github.com')) return SiGithub;
-  if (host.includes('gitlab.com')) return SiGitlab;
-  if (host.includes('spotify.com')) return SiSpotify;
-  if (host.includes('playstation.com')) return SiPlaystation;
-  if (host.includes('steampowered.com') || host.includes('steamcommunity.com')) return SiSteam;
-  if (host.includes('ea.com') || host.includes('origin.com')) return SiEa;
-  if (host.includes('facebook.com')) return SiFacebook;
-  if (host.includes('ubisoft.com') || host.includes('uplay.com')) return SiUbisoft;
-  if (host.includes('itch.io')) return SiItchdotio;
-  if (host.includes('patreon.com')) return SiPatreon;
-  if (host.includes('buymeacoffee.com')) return SiBuymeacoffee;
-  if (host.includes('boosty.to')) return SiBoosty;
-  if (host.includes('soundcloud.com')) return SiSoundcloud;
-  if (host.includes('whatsapp.com')) return SiWhatsapp;
-  if (host.includes('signal.me')) return SiSignal;
-  if (host.includes('tumblr.com')) return SiTumblr;
-  if (host.includes('artstation.com')) return SiArtstation;
-  if (host.includes('twitch.tv')) return SiTwitch;
-  if (host.includes('bandcamp.com')) return SiBandcamp;
-  if (host.includes('battle.net') || host.includes('blizzard.com')) return SiBattledotnet;
-  if (host.includes('paypal.com')) return SiPaypal;
-  if (host.includes('mihoyo.com') || host.includes('hoyoverse.com')) return SiMihoyo;
-  if (host.includes('sketchfab.com')) return SiSketchfab;
-  if (host.includes('epicgames.com')) return SiEpicgames;
-  if (host.includes('rockstargames.com')) return SiRockstargames;
-  if (host.includes('roblox.com')) return SiRoblox;
-  if (host.includes('kickstarter.com')) return SiKickstarter;
-  if (host.includes('instagram.com')) return SiInstagram;
-  if (host.includes('reddit.com')) return SiReddit;
-  if (host.includes('threads.net')) return SiThreads;
-  if (host.includes('snapchat.com')) return SiSnapchat;
-  if (host.includes('pinterest.com')) return SiPinterest;
-  if (host.includes('gog.com')) return SiGogdotcom;
-  if (host.includes('figma.com')) return SiFigma;
-  if (host.includes('vrchat.com')) return SiVrchat;
-  if (host.includes('medium.com')) return SiMedium;
-  if (host.includes('etsy.com')) return SiEtsy;
-  if (host.includes('nintendo.com') || host.includes('nintendo.net')) return SiNintendo;
-  if (host.includes('mailhide.io') || url.toLowerCase().startsWith('mailto:')) return Mail;
-
-  return ExternalLink;
 }
 
 export async function generateMetadata(
@@ -219,8 +282,8 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                         </div>
                         {links.length > 0 && (
                             <div className="flex gap-2 mt-1 flex-wrap">
-                                {links.map((link, index) => {
-                                    const IconComponent = getLinkIcon(link.url);
+                                {await Promise.all(links.map(async (link, index) => {
+                                    const IconComponent = await getLinkIcon(link.url);
                                     return (
                                         <a
                                             key={`${link.name}-${index}`}
@@ -234,7 +297,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                                             {link.name}
                                         </a>
                                     );
-                                })}
+                                }))}
                             </div>
                         )}
                     </div>
@@ -254,12 +317,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             </div>
 
             {profile.birthDate && <BirthdayConfetti birthDate={profile.birthDate.toString()} />}
-            
-            <div className="h-40 w-1"/>
+
+            <div className="h-40 w-1" />
             <div className="absolute bottom-0 left-0 right-0">
-                <FooterController visible={false}/>
+                <FooterController visible={false} />
                 <FooterProvider>
-                <Footer/>
+                    <Footer />
                 </FooterProvider>
             </div>
         </div>
