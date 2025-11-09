@@ -516,10 +516,10 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
               [&_[data-type='details']>button]:justify-center
               [&_[data-type='details']>button]:bg-transparent
               
-              [&_[data-type='details']>button::before]:content-['⯈']
+              [&_[data-type='details']>button::before]:content-['▸']
               [&_[data-type='details']>button::before]:text-base
-              [&_[data-type='details'].is-open>button::before]:content-['⯆']
-              [&_[data-type='details'][data-open='true']>button::before]:content-['⯆']
+              [&_[data-type='details'].is-open>button::before]:content-['▾']
+              [&_[data-type='details'][data-open='true']>button::before]:content-['▾']
               [&_[data-type='details']_summary]:list-none
               [&_[data-type='details']_summary]:inline
               [&_[data-type='details']_[data-type='detailsContent'][hidden]]:hidden
