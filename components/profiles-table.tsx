@@ -380,9 +380,11 @@ export default function ProfilesTable({ data, viewerCoords }: Props) {
           <ContextMenuItem onSelect={() => onShowProfile(id)}>
             Show profile
           </ContextMenuItem>
-          <ContextMenuItem onSelect={() => onShowMap(id)}>
-            Show on map
-          </ContextMenuItem>
+          {row.original.longitude != null && row.original.latitude != null && (
+            <ContextMenuItem onSelect={() => onShowMap(id)}>
+              Show on map
+            </ContextMenuItem>
+          )}
         </ContextMenuContent>
       </ContextMenu>
     );
