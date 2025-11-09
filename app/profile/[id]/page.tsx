@@ -51,7 +51,7 @@ type MastodonPeersCache = {
 
 let mastodonPeersCache: MastodonPeersCache;
 
-export async function getMastodonPeers(): Promise<string[]> {
+async function getMastodonPeers(): Promise<string[]> {
     const now = Date.now();
     const day = 24 * 60 * 60 * 1000;
 

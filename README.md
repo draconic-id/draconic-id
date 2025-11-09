@@ -103,7 +103,7 @@ Responses are returned in JSON.
 }
 ```
 
-You can try an [example request](https://draconic.id/api/profile/by-id?id=PkKltWOmS3dhUhUR) as well.
+You can try an [example request](https://draconic.id/api/profile/by-id?id=PkKltWOmS3dhUhUR) or [avatar redirect](https://draconic.id/api/avatar?profileId=PkKltWOmS3dhUhUR) as well.
 
 ### /api/profile/all
 
@@ -169,6 +169,21 @@ curl "https://draconic.id/api/profile/by-user?userIds=user123,user456"
 curl -X POST "https://draconic.id/api/profile/by-user" \
   -H "Content-Type: application/json" \
   -d '{"userIds": ["user123", "user456"]}'
+```
+
+### /api/avatar
+
+Redirect to a user's avatar image. Supports the same privacy rules as profile endpoints.
+
+```bash
+# By profile ID
+curl "https://draconic.id/api/avatar?profileId=123"
+
+# By user ID
+curl "https://draconic.id/api/avatar?userId=123"
+
+# By account ID + provider
+curl "https://draconic.id/api/avatar?accountId=123&providerId=draconic-id"
 ```
 
 ## 🙏 Acknowledgments
