@@ -213,41 +213,6 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
     toast.success("Your about information was updated successfully.");
   };
 
-//   useEffect(() => {
-//   if (!editor) return;
-
-//   const dom = editor.view.dom as HTMLElement;
-
-//   const onClick = (e: MouseEvent) => {
-//     const target = e.target as HTMLElement | null;
-//     if (!target) return;
-
-//     // Only toggle when clicking a <summary> inside TipTap details
-//     const summary = target.closest("summary");
-//     if (!summary) return;
-
-//     // Let normal interactions pass through
-//     if (target.closest("a,button,input,textarea")) return;
-
-//     // If user is selecting text, don't toggle
-//     const sel = window.getSelection();
-//     if (sel && (sel.type === "Range" || sel.toString().length)) return;
-
-//     // (Optional) Only make summary clickable when the editor is read-only:
-//     // if (editor.isEditable) return;
-
-//     const root = summary.closest("[data-type='details']");
-//     const toggleBtn = root?.querySelector(":scope > button") as HTMLButtonElement | null;
-//     if (!toggleBtn) return;
-
-//     e.preventDefault();
-//     toggleBtn.click();
-//   };
-
-//   dom.addEventListener("click", onClick);
-//   return () => dom.removeEventListener("click", onClick);
-// }, [editor]);
-
   return (
     <>
       <h1>
@@ -559,9 +524,13 @@ export default function About({ initialAbout, editable, updateAbout, backgroundC
               [&_[data-type='details']_summary]:inline
               [&_[data-type='details']_[data-type='detailsContent'][hidden]]:hidden
 
-              [&_[data-type='details']>div>summary]:select-none
+              
               [&_[data-type='details']>div>summary]:px-0
               [&_[data-type='details']>div>summary]:py-0
+
+              [&_[data-type='details']>div]:flex-1
+              [&_[data-type='details']>div]:min-w-0
+              [&_[data-type='details']>div]:w-full
 
               ${!isFormVisible ? '[&>div>p:last-child:has(br.ProseMirror-trailingBreak)]:-mb-10' : ''}`}
           />
