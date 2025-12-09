@@ -15,7 +15,8 @@ export default async function Page() {
   console.log('session on /profile', session)
 
   if (!session?.user.id) {
-    redirect((await auth.api.signInSocial({ headers: headersResult, body: { provider: 'draconic-id', callbackURL: '/profile' } })).url || "")
+    const { default: AuthRedirect } = await import('@/components/auth-redirect');
+    return <AuthRedirect />;
   }
 
   const profile = await prisma.profile.findUnique({

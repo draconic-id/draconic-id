@@ -11,7 +11,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("PRISMA_URL")
 }
 
 enum Privacy {

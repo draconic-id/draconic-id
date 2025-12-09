@@ -2,6 +2,7 @@ import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMe
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import AccountMenu from "@/components/account-menu";
 
 import { PrismaClient } from '@/prisma/generated';
 import { userAgent } from "next/server";
@@ -53,31 +54,7 @@ export default async function Navigation() {
                 <NavigationMenuItem>
                     <NavigationMenuTrigger><span className='max-w-32 truncate'>{session?.user.name ? session?.user.name : "Account"}</span></NavigationMenuTrigger>
                     <NavigationMenuContent>
-
-                        {session ?
-
-                            <>
-                                <NavigationMenuLink href="https://auth.draconic.id/if/user/#/library">
-                                    Services
-                                </NavigationMenuLink>
-                                <NavigationMenuLink href="https://auth.draconic.id/if/user/#/settings">
-                                    Settings
-                                </NavigationMenuLink>
-                                <NavigationMenuLink href="/api/auth/signout">
-                                    Sign out
-                                </NavigationMenuLink>
-                            </>
-                            :
-                            <>
-                                <NavigationMenuLink asChild>
-                                    <Link href={(await auth.api.signInSocial({ headers: await headers(), body: { provider: 'draconic-id', callbackURL: '/' } })).url || ""}>Sign in</Link>
-                                </NavigationMenuLink>
-                                <NavigationMenuLink asChild>
-                                    <Link href="https://auth.draconic.id/if/flow/default-enrollment-flow/">Register</Link>
-                                </NavigationMenuLink>
-                            </>
-                        }
-
+                        <AccountMenu isLoggedIn={!!session?.user.id} />
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 {/* <NavigationMenuIndicator /> */}
